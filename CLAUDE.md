@@ -6,6 +6,7 @@ Promotional website for the TradingView Strategy Optimizer desktop app. Full pro
 - Run only one CLI command at a time — each Bash tool call must contain exactly one command. Never use `&&`, `;`, or `|` to chain commands. Never prefix a command with `cd /some/path &&`. If a working directory change is needed, it must be its own separate Bash call before the next command.
 - Read operations within the project directory (ls, cd, git status, git diff, cat, etc.) do not require user permission — run them freely
 - Git commit messages must be a single line with no Claude attribution
+- All commits must be authored as `tanuja-sadini <tanujasadini@gmail.com>` (set in local git config)
 
 ## Project Structure
 
@@ -18,11 +19,11 @@ Promotional website for the TradingView Strategy Optimizer desktop app. Full pro
 │   └── api/
 │       └── waitlist.js         # Pages Function — stores signups in KV
 └── .claude/
-    └── commands/               # Project slash commands
-        ├── component.md        # /component — scaffold a UI component
-        ├── page.md             # /page — scaffold a full page
-        ├── deploy.md           # /deploy — deploy to Cloudflare Pages
-        └── waitlist.md         # /waitlist — read KV signups
+    └── skills/                 # Project slash commands
+        ├── component/SKILL.md  # /component — scaffold a UI component
+        ├── page/SKILL.md       # /page — scaffold a full page
+        ├── deploy/SKILL.md     # /deploy — deploy to Cloudflare Pages
+        └── waitlist/SKILL.md   # /waitlist — read KV signups
 ```
 
 ## Deployment
