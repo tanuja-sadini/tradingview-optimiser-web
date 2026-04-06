@@ -1,0 +1,6 @@
+name = "tradingviewoptimizer"
+pages_build_output_dir = "."
+
+[[kv_namespaces]]
+binding = "WAITLIST"
+id = "35a9e16e9b2a4171a356f71f930f428f"
