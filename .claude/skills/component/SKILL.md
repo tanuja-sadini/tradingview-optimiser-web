@@ -1,7 +1,6 @@
 ---
 name: component
 description: Scaffold a new UI component following the project design system
-allowed-tools: Read Write Edit Bash
 argument-hint: <component-name> <description>
 ---
 

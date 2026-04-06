@@ -1,7 +1,6 @@
 ---
 name: page
 description: Scaffold a new website page using content from the product brief
-allowed-tools: Read Write Edit Bash
 argument-hint: <page-name>
 ---
 

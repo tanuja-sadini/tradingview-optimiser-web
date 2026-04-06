@@ -32,9 +32,8 @@ Promotional website for the TradingView Strategy Optimizer desktop app. Full pro
 - **Project name:** `tradingviewoptimizer`
 - **Production domain:** tradingviewoptimizer.com
 - **Pages.dev URL:** tradingviewoptimizer.pages.dev
-- **Account ID:** c634b1a5b96172320adf5a4026105f0c
 - **Deploy command:** `wrangler pages deploy . --project-name tradingviewoptimizer --branch main`
-- **KV namespace (waitlist emails):** `35a9e16e9b2a4171a356f71f930f428f` — binding `WAITLIST`
+- **KV binding name:** `WAITLIST` (namespace ID and account ID are in `wrangler.toml`)
 
 ## Design System
 
