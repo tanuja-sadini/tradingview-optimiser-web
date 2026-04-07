@@ -1,0 +1,39 @@
+---
+---
+
+<footer>
+  <div class="footer-inner container">
+    <span>&copy; {new Date().getFullYear()} TradingView Strategy Optimizer. All data stored locally — zero cloud dependency.</span>
+    <nav class="footer-links" aria-label="Footer links">
+      <a href="mailto:hello@tradingviewoptimizer.com">Contact</a>
+    </nav>
+  </div>
+</footer>
+
+<style>
+  footer {
+    position: relative;
+    z-index: 1;
+    border-top: 1px solid var(--border);
+    padding: 28px 24px;
+  }
+
+  .footer-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+
+  .footer-inner a {
+    color: var(--text-muted);
+    text-decoration: none;
+  }
+
+  .footer-inner a:hover { color: var(--text-primary); }
+
+  .footer-links { display: flex; gap: 20px; }
+</style>

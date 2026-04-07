@@ -1,0 +1,106 @@
+---
+---
+
+<nav id="nav">
+  <div class="nav-inner">
+    <a href="/" class="nav-logo" aria-label="TradingView Strategy Optimizer">
+      <div class="nav-logo-icon">
+        <svg viewBox="0 0 24 24" aria-hidden="true" fill="white">
+          <path d="M3 17h2v-7H3v7zm4 0h2V7H7v10zm4 0h2v-4h-2v4zm4 0h2v-10h-2v10zm4 0h2v-13h-2v13z"/>
+        </svg>
+      </div>
+      <span class="nav-logo-text">TVO</span>
+    </a>
+
+    <ul class="nav-links" role="list">
+      <li><a href="/#problem">The Problem</a></li>
+      <li><a href="/#how-it-works">How It Works</a></li>
+      <li><a href="/#features">Features</a></li>
+      <li><a href="/#analytics">Analytics</a></li>
+    </ul>
+
+    <a href="/#waitlist" class="btn-primary nav-cta">Join Waitlist</a>
+  </div>
+</nav>
+
+<style>
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    padding: 0 24px;
+    border-bottom: 1px solid transparent;
+    transition: background 0.2s, border-color 0.2s;
+  }
+
+  nav.scrolled {
+    background: rgba(30,31,34,0.88);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-color: var(--border);
+  }
+
+  .nav-inner {
+    max-width: var(--max-w);
+    margin: 0 auto;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+  }
+
+  .nav-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    flex-shrink: 0;
+  }
+
+  .nav-logo-icon {
+    width: 32px;
+    height: 32px;
+    background: var(--accent);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .nav-logo-icon svg { width: 18px; height: 18px; }
+
+  .nav-logo-text {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    list-style: none;
+  }
+
+  .nav-links a {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-muted);
+    text-decoration: none;
+    padding: 6px 12px;
+    border-radius: var(--radius-sm);
+    transition: color 0.15s, background 0.15s;
+  }
+
+  .nav-links a:hover {
+    color: var(--text-primary);
+    background: var(--bg-panels);
+  }
+
+  .nav-cta { margin-left: 8px; }
+
+  @media (max-width: 640px) {
+    .nav-links { display: none; }
+  }
+</style>

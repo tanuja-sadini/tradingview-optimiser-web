@@ -1,0 +1,110 @@
+---
+---
+
+<form class="waitlist-form" id="waitlistForm" novalidate>
+  <input
+    type="email"
+    id="emailInput"
+    placeholder="your@email.com"
+    autocomplete="email"
+    required
+    aria-label="Email address"
+    aria-describedby="formNote"
+  />
+  <button type="submit" class="btn-primary" id="submitBtn">Join Waitlist</button>
+</form>
+<p class="form-note" id="formNote">macOS · Windows · Linux. No spam, ever.</p>
+<div class="form-success" id="formSuccess" role="status" aria-live="polite">
+  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+    <path d="M13.5 4.5L6.5 11.5L3 8" stroke="#23A55A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>
+  You're on the list. We'll be in touch.
+</div>
+
+<style>
+  .waitlist-form {
+    display: flex;
+    gap: 8px;
+    max-width: 420px;
+    margin: 0 auto 12px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .waitlist-form input[type="email"] {
+    flex: 1;
+    min-width: 200px;
+    background: var(--bg-darkest);
+    border: 1px solid var(--bg-elevated);
+    border-radius: var(--radius-sm);
+    padding: 11px 16px;
+    font-size: 14px;
+    color: var(--text-primary);
+    outline: none;
+    transition: border-color 0.15s;
+  }
+
+  .waitlist-form input[type="email"]::placeholder { color: var(--text-muted); }
+  .waitlist-form input[type="email"]:focus { border-color: var(--accent); }
+
+  .form-note {
+    font-size: 12px;
+    color: var(--text-muted);
+    text-align: center;
+  }
+
+  .form-success {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    color: var(--green);
+    font-size: 14px;
+    font-weight: 500;
+  }
+</style>
+
+<script>
+  const form       = document.getElementById('waitlistForm') as HTMLFormElement;
+  const submitBtn  = document.getElementById('submitBtn') as HTMLButtonElement;
+  const successEl  = document.getElementById('formSuccess') as HTMLElement;
+  const noteEl     = document.getElementById('formNote') as HTMLElement;
+  const emailInput = document.getElementById('emailInput') as HTMLInputElement;
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const email = emailInput.value.trim();
+    if (!email) return;
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Joining…';
+
+    try {
+      const res = await fetch('/api/waitlist', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      });
+
+      const data = await res.json();
+
+      if (data.ok) {
+        form.style.display = 'none';
+        noteEl.style.display = 'none';
+        successEl.style.display = 'flex';
+      } else {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Join Waitlist';
+        emailInput.setCustomValidity(data.error ?? 'Something went wrong.');
+        emailInput.reportValidity();
+        emailInput.setCustomValidity('');
+      }
+    } catch {
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Join Waitlist';
+      emailInput.setCustomValidity('Network error — please try again.');
+      emailInput.reportValidity();
+      emailInput.setCustomValidity('');
+    }
+  });
+</script>

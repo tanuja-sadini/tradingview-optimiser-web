@@ -1,5 +1,8 @@
 node_modules/
 .wrangler/
 dist/
+.astro/
 .env
 *.local
+/test-results/
+/playwright-report/
