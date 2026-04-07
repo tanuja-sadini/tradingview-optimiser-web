@@ -4,6 +4,7 @@ Promotional website for the TradingView Strategy Optimizer desktop app. Full pro
 
 ## Behavior Rules
 - Run only one CLI command at a time — each Bash tool call must contain exactly one command. Never use `&&`, `;`, or `|` to chain commands. Never prefix a command with `cd /some/path &&`. If a working directory change is needed, it must be its own separate Bash call before the next command.
+- Never use `git -C <path>` — the working directory is already the project root, so run git commands directly (e.g. `git status`, not `git -C /some/path status`)
 - Read operations within the project directory (ls, cd, git status, git diff, cat, etc.) do not require user permission — run them freely
 - Git commit messages must be a single line with no Claude attribution
 - Always test and verify what you changed and get the user's confirmation that it works as expected before you commit
