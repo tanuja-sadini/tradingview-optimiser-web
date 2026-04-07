@@ -8,24 +8,36 @@ Promotional website for the TradingView Strategy Optimizer desktop app. Full pro
 - Read operations within the project directory (ls, cd, git status, git diff, cat, etc.) do not require user permission — run them freely
 - Git commit messages must be a single line with no Claude attribution
 - Always test and verify what you changed and get the user's confirmation that it works as expected before you commit
+- After every functional change, update `README.md` and `.claude/skills/context/SKILL.md` to reflect the current state before committing
 - All commits must be authored as `tanuja-sadini <tanujasadini@gmail.com>` (set in local git config)
 
 ## Project Structure
 
 ```
 .
-├── index.html                  # Coming soon page (live)
+├── src/
+│   ├── pages/
+│   │   └── index.astro         # Homepage
+│   ├── components/
+│   │   ├── Nav.astro
+│   │   ├── Footer.astro
+│   │   ├── WaitlistForm.astro  # Posts to https://api.tradingviewoptimizer.com/v1/waitlist
+│   │   └── DashboardPreview.astro
+│   ├── layouts/
+│   │   └── Base.astro
+│   └── styles/
+│       └── global.css
+├── public/                     # Static assets
+├── astro.config.mjs
 ├── wrangler.toml               # Cloudflare Pages config
 ├── website-brief.md            # Full product brief — source of truth for all copy
-├── functions/
-│   └── api/
-│       └── waitlist.js         # Pages Function — stores signups in KV
 └── .claude/
     └── skills/                 # Project slash commands
+        ├── context/SKILL.md    # Shared project context for skills
         ├── component/SKILL.md  # /component — scaffold a UI component
         ├── page/SKILL.md       # /page — scaffold a full page
         ├── deploy/SKILL.md     # /deploy — deploy to Cloudflare Pages
-        └── waitlist/SKILL.md   # /waitlist — read KV signups
+        └── waitlist/SKILL.md   # /waitlist — read waitlist signups
 ```
 
 ## Deployment
