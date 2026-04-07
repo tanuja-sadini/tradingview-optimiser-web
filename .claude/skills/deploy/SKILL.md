@@ -1,22 +1,25 @@
 ---
 name: deploy
-description: Deploy the website to Cloudflare Pages production
-disable-model-invocation: true
+description: Build and deploy the website to Cloudflare Pages production
 ---
 
-Deploy the current website to Cloudflare Pages.
+Deploy the TradingView Optimizer website to Cloudflare Pages.
 
 ## Project details
-All config (account ID, project name, KV namespace) is in `wrangler.toml` at the project root. Read it before running any commands.
+- Framework: Astro with `@astrojs/cloudflare` adapter
+- Build output: `dist/` (set in `wrangler.toml` as `pages_build_output_dir`)
+- Project name: `tradingviewoptimizer`
+- Production domain: tradingviewoptimizer.com
 
 ## Steps
-1. Check wrangler is authenticated (`wrangler whoami`). If not, ask the user to run `! wrangler login`.
-2. If the project has a build step (e.g. `npm run build`), run it first and deploy the output directory. Otherwise deploy the project root `.`.
-3. Read the project name from `wrangler.toml`, then run: `wrangler pages deploy . --project-name <name> --branch main`
-4. Confirm the deployment URL and report it to the user.
-5. Remind the user that the custom domain may take up to 60 seconds to reflect changes.
+1. Check wrangler is authenticated: `wrangler whoami`. If not authenticated, ask the user to run `! wrangler login` in the prompt.
+2. Run the build: `npm run build`
+3. Fix any build errors before proceeding.
+4. Deploy: `wrangler pages deploy dist --project-name tradingviewoptimizer --branch main`
+5. Report the deployment URL to the user.
+6. Note: custom domain (tradingviewoptimizer.com) may take up to 60 seconds to reflect changes.
 
-## Notes
+## Rules
+- Always build before deploying — never deploy a stale `dist/`.
 - Never deploy `.env` files or secrets.
-- `functions/api/waitlist.js` must be present in the deployment directory.
-- Fix any build errors before deploying.
+- Run one CLI command at a time (no `&&` chaining).
