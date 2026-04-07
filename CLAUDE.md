@@ -6,6 +6,7 @@ Promotional website for the TradingView Strategy Optimizer desktop app. Full pro
 - Run only one CLI command at a time — each Bash tool call must contain exactly one command. Never use `&&`, `;`, or `|` to chain commands. Never prefix a command with `cd /some/path &&`. If a working directory change is needed, it must be its own separate Bash call before the next command.
 - Read operations within the project directory (ls, cd, git status, git diff, cat, etc.) do not require user permission — run them freely
 - Git commit messages must be a single line with no Claude attribution
+- Always test and verify what you changed and get the user's confirmation that it works as expected before you commit
 - All commits must be authored as `tanuja-sadini <tanujasadini@gmail.com>` (set in local git config)
 
 ## Project Structure
@@ -76,4 +77,4 @@ Promotional website for the TradingView Strategy Optimizer desktop app. Full pro
 - No cloud features — all data is local (SQLite)
 - TradingView is a third-party product — reference accurately
 - Pricing is TBD — use waitlist / "coming soon" CTAs
-- macOS only for now — Windows planned, do not promise a date
+- Available on macOS, Windows, and Linux simultaneously — all three platforms launch together
