@@ -48,27 +48,33 @@ const { title, description } = Astro.props;
     document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
     // Count-up animation
-    function animateCount(el: Element, target: number, duration: number) {
+    function animateCount(el: Element, target: number, duration: number, endText?: string) {
       const start = performance.now();
       const update = (now: number) => {
         const progress = Math.min((now - start) / duration, 1);
-        const eased = 1 - Math.pow(1 - progress, 3);
-        el.textContent = Math.round(eased * target).toLocaleString();
-        if (progress < 1) requestAnimationFrame(update);
+        const eased = Math.pow(progress, 3);
+        if (progress < 1) {
+          el.textContent = Math.round(eased * target).toLocaleString();
+          requestAnimationFrame(update);
+        } else {
+          el.textContent = endText ?? target.toLocaleString();
+        }
       };
       requestAnimationFrame(update);
     }
 
-    const countEl = document.querySelector('[data-count]');
-    if (countEl) {
-      const countObserver = new IntersectionObserver((entries) => {
+    document.querySelectorAll('[data-count], [data-count-text]').forEach(el => {
+      const htmlEl = el as HTMLElement;
+      const obs = new IntersectionObserver((entries) => {
         if (entries[0].isIntersecting) {
-          animateCount(countEl, parseInt((countEl as HTMLElement).dataset.count ?? '0', 10), 1200);
-          countObserver.unobserve(countEl);
+          const endText = htmlEl.dataset.countText;
+          const target = endText ? 1_000_000 : parseInt(htmlEl.dataset.count ?? '0', 10);
+          animateCount(el, target, 5000, endText);
+          obs.unobserve(el);
         }
       }, { threshold: 0.5 });
-      countObserver.observe(countEl);
-    }
+      obs.observe(el);
+    });
   </script>
 </body>
 </html>

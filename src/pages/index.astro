@@ -47,7 +47,7 @@ import WaitlistForm from '../components/WaitlistForm.astro';
 
     <div class="hero-stats reveal">
       <div class="hero-stat">
-        <div class="hero-stat-value mono" data-count="1848">0</div>
+        <div class="hero-stat-value mono" data-count-text="Unlimited">0</div>
         <div class="hero-stat-label">combinations per run</div>
       </div>
       <div class="hero-stat">
@@ -89,7 +89,7 @@ import WaitlistForm from '../components/WaitlistForm.astro';
           <div><span class="t-prompt">&gt; </span><span class="t-cmd">Set TP = 20, run backtest</span><span class="t-out"> (18s)</span></div>
           <div><span class="t-dim">... 2 hours later ...</span></div>
           <div><span class="t-err">✗ 12 combinations checked</span></div>
-          <div><span class="t-warn">⚠ 1,836 remaining — forgot SL sweep</span></div>
+          <div><span class="t-warn">⚠ Hundreds more remaining — forgot SL sweep</span></div>
           <div><span class="t-err">✗ Already forgot row 3 results</span></div>
         </div>
         <p class="problem-pain">Hours of clicking. Incomplete coverage. Results you can't trust.</p>
@@ -102,11 +102,11 @@ import WaitlistForm from '../components/WaitlistForm.astro';
         </div>
         <div class="terminal" aria-label="Automated sweep terminal example">
           <div><span class="t-ok">✓ </span><span class="t-out">Parameters extracted from chart</span></div>
-          <div><span class="t-ok">✓ </span><span class="t-out">Sweep configured: 1,848 combinations</span></div>
+          <div><span class="t-ok">✓ </span><span class="t-out">Sweep configured — all combinations queued</span></div>
           <div><span class="t-prompt">&gt; </span><span class="t-cmd">Run started — unattended overnight</span></div>
           <div>&nbsp;</div>
           <div><span class="t-out">████████████████████ </span><span class="t-ok">100%</span></div>
-          <div><span class="t-ok">✓ </span><span class="t-out">1,848 / 1,848 complete · 4h 12m</span></div>
+          <div><span class="t-ok">✓ </span><span class="t-out">All combinations complete · 4h 12m</span></div>
           <div>&nbsp;</div>
           <div><span class="t-ok">✓ </span><span class="t-out">Best: TP=25, SL=15, HTF=15m</span></div>
           <div><span class="t-ok">✓ </span><span class="t-out">Score 87.3 · PF 2.31 · DD −8.2%</span></div>

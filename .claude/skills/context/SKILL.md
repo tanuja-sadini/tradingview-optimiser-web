@@ -35,7 +35,7 @@ No local API route — the external backend handles storage.
 ## Copy Rules
 - Audience: algorithmic traders using TradingView Pine Script
 - Direct and technical — no "revolutionary", no "AI-powered"
-- Numbers over adjectives: "1,848 combinations" not "thousands"
+- Do not invent specific counts — use "thousands of combinations" rather than a made-up figure
 - Only use feature claims from `website-brief.md`
 
 ## Pages

@@ -81,7 +81,6 @@ Promotional website for the TradingView Strategy Optimizer desktop app. Full pro
 
 - Audience: algorithmic traders who know Pine Script, drawdown, profit factor
 - Direct and technical — no fluff, no "revolutionary" or "game-changing"
-- Numbers over adjectives: "runs 1,848 combinations" not "runs thousands"
 - Do not invent feature claims — only use what is in `website-brief.md`
 
 ## Content Rules

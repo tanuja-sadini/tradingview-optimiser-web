@@ -231,7 +231,7 @@ CTA: Download button or waitlist form.
 - **Audience:** Technical — these are traders who write Pine Script or at least understand strategy parameters, backtesting, drawdown, profit factor
 - **Tone:** Confident, direct, tool-forward. No fluff. No vague "AI-powered" language.
 - **Voice:** Like a senior developer explaining a tool to another developer. Not sales-y.
-- **Do say:** "Runs 1,848 combinations overnight", "reads parameters directly from your chart", "resume from where it left off"
+- **Do say:** "Runs thousands of combinations overnight", "reads parameters directly from your chart", "resume from where it left off"
 - **Don't say:** "revolutionary", "game-changing", "cutting-edge AI"
 
 ---
@@ -241,7 +241,7 @@ CTA: Download button or waitlist form.
 - *Stop clicking. Start sweeping.*
 - *Backtest every combination. Find the best one.*
 - *Your TradingView strategy, optimized automatically.*
-- *1,848 backtests. Unattended. Results by morning.*
+- *Thousands of backtests. Unattended. Results by morning.*
 - *The parameter optimizer TradingView doesn't have.*
 
 ---

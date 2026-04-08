@@ -30,7 +30,7 @@ Create a new UI component for the TradingView Strategy Optimizer website.
 
 **Copy tone:**
 - Direct and technical — no fluff, no "revolutionary"
-- Numbers over adjectives: "1,848 combinations" not "thousands"
+- Do not invent specific counts — use "thousands of combinations" rather than a made-up figure
 - Audience: algorithmic traders who know drawdown, profit factor, Pine Script
 
 ## Steps
