@@ -1,7 +1,6 @@
 ---
 import Base from '../layouts/Base.astro';
 import DashboardPreview from '../components/DashboardPreview.astro';
-import WaitlistForm from '../components/WaitlistForm.astro';
 ---
 
 <Base
@@ -13,9 +12,9 @@ import WaitlistForm from '../components/WaitlistForm.astro';
 <section id="hero">
   <div class="hero-inner">
 
-    <div class="hero-badge" aria-label="Status: Early Access">
+    <div class="hero-badge" aria-label="Status: Now Available">
       <span class="hero-badge-dot" aria-hidden="true"></span>
-      Early Access &nbsp;·&nbsp; macOS · Windows · Linux
+      Now Available &nbsp;·&nbsp; macOS · Windows · Linux
     </div>
 
     <h1 class="hero-h1">
@@ -29,11 +28,11 @@ import WaitlistForm from '../components/WaitlistForm.astro';
     </p>
 
     <div class="hero-actions">
-      <a href="#waitlist" class="btn-primary">
+      <a href="/pricing" class="btn-primary">
         <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
           <path d="M2 8h12M8 2l6 6-6 6" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
-        Join the Waitlist
+        Get Started
       </a>
       <a href="#how-it-works" class="btn-ghost">See how it works</a>
     </div>
@@ -304,13 +303,22 @@ import WaitlistForm from '../components/WaitlistForm.astro';
   </div>
 </section>
 
-<!-- ════════ WAITLIST CTA ════════ -->
-<section id="waitlist">
+<!-- ════════ PRICING CTA ════════ -->
+<section id="cta">
   <div class="container">
-    <div class="waitlist-card reveal">
-      <h2 class="waitlist-card-title">Ready to stop clicking?</h2>
-      <p class="waitlist-card-sub">Join the waitlist. We'll reach out when early access opens.</p>
-      <WaitlistForm />
+    <div class="cta-card reveal">
+      <h2 class="cta-card-title">Ready to stop clicking?</h2>
+      <p class="cta-card-sub">$19.99/month or $199.99/year. Full access. Cancel anytime.</p>
+      <div class="cta-actions">
+        <a href="/pricing" class="btn-primary cta-btn">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M2 8h12M8 2l6 6-6 6" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          View Pricing
+        </a>
+        <a href="/auth/login" class="btn-ghost cta-btn">Sign In</a>
+      </div>
+      <p class="cta-note">macOS · Windows · Linux &nbsp;·&nbsp; All data stored locally</p>
     </div>
   </div>
 </section>
@@ -602,10 +610,10 @@ import WaitlistForm from '../components/WaitlistForm.astro';
 
 @media (max-width: 640px) { .analytics-grid { grid-template-columns: 1fr; } }
 
-/* ── Waitlist CTA ── */
-#waitlist { padding: 0 24px 120px; position: relative; z-index: 1; }
+/* ── Pricing CTA ── */
+#cta { padding: 0 24px 120px; position: relative; z-index: 1; }
 
-.waitlist-card {
+.cta-card {
   background: var(--bg-panels);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
@@ -615,7 +623,7 @@ import WaitlistForm from '../components/WaitlistForm.astro';
   overflow: hidden;
 }
 
-.waitlist-card::before {
+.cta-card::before {
   content: '';
   position: absolute;
   top: -60px; left: 50%;
@@ -625,6 +633,11 @@ import WaitlistForm from '../components/WaitlistForm.astro';
   pointer-events: none;
 }
 
-.waitlist-card-title { font-size: clamp(24px, 3vw, 36px); font-weight: 700; letter-spacing: -0.02em; color: var(--text-primary); margin-bottom: 12px; position: relative; z-index: 1; }
-.waitlist-card-sub   { font-size: 15px; color: var(--text-muted); margin-bottom: 36px; position: relative; z-index: 1; }
+.cta-card-title { font-size: clamp(24px, 3vw, 36px); font-weight: 700; letter-spacing: -0.02em; color: var(--text-primary); margin-bottom: 12px; position: relative; z-index: 1; }
+.cta-card-sub   { font-size: 15px; color: var(--text-muted); margin-bottom: 32px; position: relative; z-index: 1; }
+
+.cta-actions { display: flex; align-items: center; justify-content: center; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; position: relative; z-index: 1; }
+.cta-btn { min-width: 140px; justify-content: center; }
+
+.cta-note { font-size: 12px; color: var(--text-muted); position: relative; z-index: 1; }
 </style>

@@ -1,4 +1,8 @@
 ---
+interface Props {
+  user?: { email: string | null } | null;
+}
+const { user } = Astro.props;
 ---
 
 <nav id="nav">
@@ -9,13 +13,47 @@
     </a>
 
     <ul class="nav-links" role="list">
-      <li><a href="/#problem">The Problem</a></li>
       <li><a href="/#how-it-works">How It Works</a></li>
       <li><a href="/#features">Features</a></li>
       <li><a href="/#analytics">Analytics</a></li>
+      <li><a href="/pricing">Pricing</a></li>
     </ul>
 
-    <a href="/#waitlist" class="btn-primary nav-cta">Join Waitlist</a>
+    <div class="nav-actions">
+      {user ? (
+        <div class="nav-account" id="navAccount">
+          <button class="nav-account-btn" id="navAccountBtn" aria-haspopup="true" aria-expanded="false">
+            <span class="nav-account-email">{user.email ?? 'Account'}</span>
+            <svg class="nav-account-chevron" width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+              <path d="M2 4l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+          <div class="nav-dropdown" id="navDropdown" role="menu">
+            <a href="/dashboard" class="nav-dropdown-item" role="menuitem">
+              <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <rect x="2" y="2" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.5"/>
+                <rect x="9" y="2" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.5"/>
+                <rect x="2" y="9" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.5"/>
+                <rect x="9" y="9" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.5"/>
+              </svg>
+              Dashboard
+            </a>
+            <div class="nav-dropdown-divider"></div>
+            <a href="/auth/logout" class="nav-dropdown-item nav-dropdown-item--danger" role="menuitem">
+              <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <path d="M6 14H3a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1h3M11 11l3-3-3-3M14 8H6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              Sign out
+            </a>
+          </div>
+        </div>
+      ) : (
+        <>
+          <a href="/auth/login" class="btn-ghost nav-cta">Log In</a>
+          <a href="/pricing" class="btn-primary nav-cta">Get Started</a>
+        </>
+      )}
+    </div>
   </div>
 </nav>
 
@@ -72,6 +110,8 @@
     align-items: center;
     gap: 4px;
     list-style: none;
+    flex: 1;
+    justify-content: center;
   }
 
   .nav-links a {
@@ -89,9 +129,135 @@
     background: var(--bg-panels);
   }
 
-  .nav-cta { margin-left: 8px; }
+  .nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+  }
 
-  @media (max-width: 640px) {
+  /* Account dropdown */
+  .nav-account {
+    position: relative;
+  }
+
+  .nav-account-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 6px 10px;
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s;
+  }
+
+  .nav-account-btn:hover,
+  .nav-account-btn[aria-expanded="true"] {
+    background: var(--bg-panels);
+    border-color: rgba(255,255,255,0.12);
+  }
+
+  .nav-account-email {
+    font-size: 12px;
+    color: var(--text-muted);
+    max-width: 160px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .nav-account-btn:hover .nav-account-email,
+  .nav-account-btn[aria-expanded="true"] .nav-account-email {
+    color: var(--text-primary);
+  }
+
+  .nav-account-chevron {
+    color: var(--text-muted);
+    flex-shrink: 0;
+    transition: transform 0.2s;
+  }
+
+  .nav-account-btn[aria-expanded="true"] .nav-account-chevron {
+    transform: rotate(180deg);
+  }
+
+  .nav-dropdown {
+    display: none;
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    min-width: 180px;
+    background: var(--bg-elevated);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: var(--radius-md);
+    padding: 4px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+    z-index: 200;
+  }
+
+  .nav-dropdown.open {
+    display: block;
+  }
+
+  .nav-dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 9px 12px;
+    font-size: 13px;
+    color: var(--text-muted);
+    text-decoration: none;
+    border-radius: var(--radius-sm);
+    transition: background 0.12s, color 0.12s;
+  }
+
+  .nav-dropdown-item:hover {
+    background: var(--bg-panels);
+    color: var(--text-primary);
+  }
+
+  .nav-dropdown-item--danger:hover {
+    background: rgba(242,63,67,0.1);
+    color: var(--red);
+  }
+
+  .nav-dropdown-divider {
+    height: 1px;
+    background: var(--border);
+    margin: 4px 0;
+  }
+
+  @media (max-width: 700px) {
     .nav-links { display: none; }
   }
 </style>
+
+<script>
+  const btn      = document.getElementById('navAccountBtn');
+  const dropdown = document.getElementById('navDropdown');
+
+  if (btn && dropdown) {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const open = dropdown.classList.toggle('open');
+      btn.setAttribute('aria-expanded', String(open));
+    });
+
+    // Close on outside click
+    document.addEventListener('click', () => {
+      dropdown.classList.remove('open');
+      btn.setAttribute('aria-expanded', 'false');
+    });
+
+    // Close on Escape
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        dropdown.classList.remove('open');
+        btn.setAttribute('aria-expanded', 'false');
+        btn.focus();
+      }
+    });
+  }
+</script>

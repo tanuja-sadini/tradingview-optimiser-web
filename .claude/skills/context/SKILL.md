@@ -6,7 +6,7 @@ description: Shared project context — current state, tech stack, and key decis
 # Project Context — TradingView Strategy Optimizer Website
 
 ## Tech Stack
-- **Framework:** Astro with `@astrojs/cloudflare` adapter
+- **Framework:** Astro (`output: server`) with `@astrojs/cloudflare` adapter
 - **Deployment:** Cloudflare Pages (`tradingviewoptimizer` project)
 - **Domain:** tradingviewoptimizer.com
 - **Build output:** `dist/`
@@ -14,15 +14,35 @@ description: Shared project context — current state, tech stack, and key decis
 ## Key Files
 - `website-brief.md` — source of truth for all copy and feature descriptions
 - `CLAUDE.md` — design system, tone rules, behavior rules
-- `src/pages/index.astro` — homepage (only page currently)
-- `src/layouts/Base.astro` — shared layout wrapper
+- `src/pages/index.astro` — homepage
+- `src/pages/pricing.astro` — pricing page (monthly $19.99 / annual $199.99)
+- `src/pages/dashboard.astro` — protected user dashboard
+- `src/layouts/Base.astro` — shared layout, reads session and passes user to Nav
 - `src/styles/global.css` — CSS custom properties and global styles
-- `src/components/WaitlistForm.astro` — waitlist signup form
+- `src/lib/auth.ts` — Asgardeo OIDC helpers
+- `src/lib/session.ts` — HMAC-signed HttpOnly cookie session management
 
-## Waitlist
-Signups POST to `https://api.tradingviewoptimizer.com/v1/waitlist` with `{ email }`.  
-Returns `{ ok: true }` on success, `{ ok: false, error: "..." }` on failure.  
-No local API route — the external backend handles storage.
+## Auth
+- **Provider:** Asgardeo OIDC (tenant: `tvoprod`)
+- **Flow:** Authorization Code (server-side, confidential client)
+- **Session:** HMAC-SHA256 signed HttpOnly cookie `tvo_sess`, 8hr lifetime
+- **Routes:** `/auth/login` → `/auth/callback` → `/auth/logout`
+- Credentials stored in Cloudflare Pages env vars and `.dev.vars` locally
+
+## Backend API
+- Base URL: `https://api.tradingviewoptimizer.com`
+- Auth: Bearer JWT (Asgardeo access token)
+- Key endpoints used by the website:
+  - `GET /v1/me` — user profile, subscription, usage
+  - `POST /v1/checkout` — create Stripe checkout session (`plan: monthly | annual`)
+  - `POST /v1/waitlist` — join waitlist
+- Server-side proxies at `/api/me` and `/api/checkout` keep the access token out of the browser
+
+## Pricing
+- Monthly: $19.99/month
+- Annual: $199.99/year ($16.67/month, saves ~$40/year)
+- Checkout flow: pricing page → `/api/checkout` → Stripe hosted page → `/dashboard?checkout=success`
+- On checkout success: polls `/api/me` every 2s for up to 15s until subscription is active
 
 ## Design System (summary)
 - Dark backgrounds only — primary bg `#1E1F22`, panels `#2B2D31`, cards `#313338`
@@ -35,11 +55,11 @@ No local API route — the external backend handles storage.
 ## Copy Rules
 - Audience: algorithmic traders using TradingView Pine Script
 - Direct and technical — no "revolutionary", no "AI-powered"
-- Do not invent specific counts — use "thousands of combinations" rather than a made-up figure
+- Do not invent specific counts
 - Only use feature claims from `website-brief.md`
 
-## Pages
-- `index.astro` — homepage with hero, how it works, features, waitlist CTA
+## Known Backlog
+See `.claude/memory/project_known_issues.md` for tracked issues.
 
 ## After Functional Changes
 Update this file and `README.md` to reflect the new state before committing.

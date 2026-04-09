@@ -1,0 +1,469 @@
+---
+import Base from '../layouts/Base.astro';
+import { getSession } from '../lib/session';
+
+const { env } = Astro.locals.runtime;
+const session = await getSession(Astro.request, env.SESSION_SECRET);
+
+if (!session) {
+  return Astro.redirect('/auth/login?next=/dashboard');
+}
+
+// Fetch user profile from backend
+let profile: {
+  user_id: string;
+  subscription: { plan_id: string; status: string; current_period_end: number | null } | null;
+  usage: Record<string, { count: number }>;
+} | null = null;
+let profileError: string | null = null;
+
+try {
+  const res = await fetch('https://api.tradingviewoptimizer.com/v1/me', {
+    headers: { Authorization: `Bearer ${session.access_token}` },
+  });
+  if (res.ok) {
+    profile = await res.json();
+  } else {
+    const body = await res.text();
+    profileError = `${res.status}: ${body}`;
+    console.error('[dashboard] /v1/me failed:', profileError);
+  }
+} catch (e) {
+  profileError = String(e);
+  console.error('[dashboard] /v1/me fetch error:', e);
+}
+
+const sub   = profile?.subscription ?? null;
+const usage = profile?.usage ?? {};
+const isActive = sub && ['active', 'trialing'].includes(sub.status);
+
+function formatDate(ts: number | null | undefined): string {
+  if (!ts) return '—';
+  return new Date(ts * 1000).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+}
+
+function planLabel(planId: string | undefined): string {
+  if (planId === 'monthly') return 'Monthly';
+  if (planId === 'annual')  return 'Annual';
+  return 'Free';
+}
+
+const params = new URL(Astro.request.url).searchParams;
+const checkoutActivating = params.get('checkout') === 'success';  // polling state
+const checkoutActivated  = params.get('activated') === '1';       // confirmed active
+
+// Placeholder — update with real download URL when available
+const DOWNLOAD_URL = '#'; // TODO: replace with actual .dmg URL
+---
+
+<Base
+  title="Dashboard — TradingView Strategy Optimizer"
+  description="Your TVO account dashboard."
+>
+
+<section id="dashboard">
+  <div class="container">
+
+    <div class="dash-header">
+      <div>
+        <h1 class="dash-title">Dashboard</h1>
+        <p class="dash-email">{session.email ?? session.user_id}</p>
+      </div>
+      <a href="/auth/logout" class="btn-ghost sign-out">Sign out</a>
+    </div>
+
+    {checkoutActivated && (
+      <div class="alert alert-success" role="status">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <path d="M13.5 4.5L6.5 11.5L3 8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Subscription activated. Welcome aboard.
+      </div>
+    )}
+
+    {checkoutActivating && (
+      <div class="alert alert-activating" id="activatingBanner" role="status" aria-live="polite">
+        <span class="activating-spinner" aria-hidden="true"></span>
+        <span id="activatingMsg">Your subscription is activating&hellip;</span>
+      </div>
+    )}
+
+    <div class="dash-grid">
+
+      <!-- Subscription card -->
+      <div class="dash-card">
+        <div class="dash-card-label">Subscription</div>
+
+        {isActive ? (
+          <div class="sub-details">
+            <div class="sub-row">
+              <span class="sub-key">Plan</span>
+              <span class="sub-val">{planLabel(sub?.plan_id)}</span>
+            </div>
+            <div class="sub-row">
+              <span class="sub-key">Status</span>
+              <span class="status-badge status-active">
+                <span class="status-dot"></span>
+                {sub?.status === 'trialing' ? 'Trial' : 'Active'}
+              </span>
+            </div>
+            <div class="sub-row">
+              <span class="sub-key">Renews</span>
+              <span class="sub-val">{formatDate(sub?.current_period_end)}</span>
+            </div>
+          </div>
+        ) : (
+          <div class="sub-empty">
+            <p>No active subscription.</p>
+            <a href="/pricing" class="btn-primary sub-upgrade-btn">View Plans</a>
+          </div>
+        )}
+      </div>
+
+      <!-- Usage card -->
+      <div class="dash-card">
+        <div class="dash-card-label">Usage — this month</div>
+        {Object.keys(usage).length > 0 ? (
+          <div class="usage-list">
+            {Object.entries(usage).map(([metric, data]) => (
+              <div class="usage-row">
+                <span class="usage-metric">{metric}</span>
+                <span class="usage-count mono">{data.count}</span>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p class="dash-empty-text">No usage recorded yet.</p>
+        )}
+      </div>
+
+      <!-- Download card (full width) -->
+      <div class="dash-card dash-card-full">
+        <div class="dash-card-label">Download</div>
+        <div class="download-row">
+          <div class="download-platform">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" class="platform-icon">
+              <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
+            </svg>
+            <div>
+              <div class="platform-name">macOS</div>
+              <div class="platform-note">Universal binary — Apple Silicon &amp; Intel</div>
+            </div>
+          </div>
+
+          {isActive ? (
+            <a href={DOWNLOAD_URL} class="btn-primary download-btn" download>
+              <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <path d="M8 2v8m0 0l-3-3m3 3l3-3M3 13h10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              Download for macOS
+            </a>
+          ) : (
+            <a href="/pricing" class="btn-ghost download-btn">Subscribe to Download</a>
+          )}
+        </div>
+
+        <div class="download-other">
+          <span class="platform-coming">
+            <svg width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <rect x="2" y="3" width="12" height="11" rx="1.5" stroke="currentColor" stroke-width="1.5"/>
+              <path d="M2 7h12" stroke="currentColor" stroke-width="1.5"/>
+            </svg>
+            Windows — available
+          </span>
+          <span class="platform-coming">
+            <svg width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.5"/>
+              <path d="M8 5v3l2 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+            Linux — available
+          </span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<script>
+  const banner = document.getElementById('activatingBanner');
+  if (banner) {
+    const msg        = document.getElementById('activatingMsg')!;
+    const INTERVAL   = 2000;   // poll every 2s
+    const TIMEOUT    = 15000;  // give up after 15s
+    const started    = Date.now();
+
+    async function poll() {
+      try {
+        const res  = await fetch('/api/me');
+        if (res.status === 401) return;           // session gone — stop
+        const data = await res.json();
+        const sub  = data?.subscription;
+        const active = sub && ['active', 'trialing'].includes(sub.status);
+
+        if (active) {
+          window.location.replace('/dashboard?activated=1');
+          return;
+        }
+      } catch { /* network hiccup — keep trying */ }
+
+      if (Date.now() - started >= TIMEOUT) {
+        banner.classList.remove('alert-activating');
+        banner.classList.add('alert-error');
+        msg.innerHTML =
+          'We couldn\'t confirm your subscription yet. If you were charged, please contact us at ' +
+          '<a href="mailto:contact@tradingviewoptimizer.com">contact@tradingviewoptimizer.com</a>.';
+        return;
+      }
+
+      setTimeout(poll, INTERVAL);
+    }
+
+    setTimeout(poll, INTERVAL);
+  }
+</script>
+
+</Base>
+
+<style>
+#dashboard {
+  padding: 64px 24px 120px;
+  position: relative;
+  z-index: 1;
+  min-height: calc(100vh - 60px);
+}
+
+.dash-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 32px;
+  max-width: 900px;
+}
+
+.dash-title {
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+
+.dash-email {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.sign-out { font-size: 13px; }
+
+.alert {
+  max-width: 900px;
+  padding: 14px 18px;
+  border-radius: var(--radius-md);
+  font-size: 13px;
+  font-weight: 500;
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.alert-success {
+  background: rgba(35,165,90,0.1);
+  border: 1px solid rgba(35,165,90,0.25);
+  color: var(--green);
+}
+
+.alert-activating {
+  background: rgba(88,101,242,0.08);
+  border: 1px solid rgba(88,101,242,0.2);
+  color: var(--accent);
+}
+
+.alert-error {
+  background: rgba(242,63,67,0.08);
+  border: 1px solid rgba(242,63,67,0.2);
+  color: var(--red);
+}
+
+.alert-error a {
+  color: var(--red);
+  text-decoration: underline;
+}
+
+.activating-spinner {
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(88,101,242,0.3);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  flex-shrink: 0;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.dash-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  max-width: 900px;
+}
+
+.dash-card {
+  background: var(--bg-panels);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 28px;
+}
+
+.dash-card-full {
+  grid-column: 1 / -1;
+}
+
+.dash-card-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 20px;
+}
+
+/* Subscription */
+.sub-details { display: flex; flex-direction: column; gap: 14px; }
+
+.sub-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13px;
+}
+
+.sub-key { color: var(--text-muted); }
+.sub-val { color: var(--text-primary); font-weight: 500; }
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.status-active { color: var(--green); }
+
+.status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  animation: pulse 2.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(35,165,90,0.4); }
+  50%       { opacity: 0.7; box-shadow: 0 0 0 4px rgba(35,165,90,0); }
+}
+
+.sub-empty {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.sub-empty p {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.sub-upgrade-btn { align-self: flex-start; }
+
+/* Usage */
+.usage-list { display: flex; flex-direction: column; gap: 12px; }
+
+.usage-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13px;
+}
+
+.usage-metric {
+  color: var(--text-muted);
+  text-transform: capitalize;
+}
+
+.usage-count {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
+}
+
+.dash-empty-text {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+/* Download */
+.download-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.download-platform {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.platform-icon { color: var(--text-muted); }
+
+.platform-name {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 2px;
+}
+
+.platform-note {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.download-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+}
+
+.download-other {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  border-top: 1px solid var(--border);
+  padding-top: 16px;
+}
+
+.platform-coming {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+@media (max-width: 640px) {
+  .dash-grid { grid-template-columns: 1fr; }
+  .dash-card-full { grid-column: 1; }
+}
+</style>
