@@ -1,13 +1,16 @@
 ---
 import Base from '../layouts/Base.astro';
-import { getSession } from '../lib/session';
+import { getValidSession } from '../lib/session';
 
 const { env } = Astro.locals.runtime;
-const session = await getSession(Astro.request, env.SESSION_SECRET);
+const result = await getValidSession(Astro.request, env.SESSION_SECRET, env.ASGARDEO_CLIENT_ID, env.ASGARDEO_CLIENT_SECRET);
 
-if (!session) {
+if (!result) {
   return Astro.redirect('/auth/login?next=/dashboard');
 }
+
+const { session, newCookie } = result;
+if (newCookie) Astro.response.headers.append('Set-Cookie', newCookie);
 
 // Fetch user profile from backend
 let profile: {
@@ -59,6 +62,7 @@ const DOWNLOAD_URL = '#'; // TODO: replace with actual .dmg URL
 <Base
   title="Dashboard — TradingView Strategy Optimizer"
   description="Your TVO account dashboard."
+  subscription={sub}
 >
 
 <section id="dashboard">

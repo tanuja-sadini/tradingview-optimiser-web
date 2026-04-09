@@ -27,7 +27,7 @@ export async function exchangeCode(
   clientId: string,
   clientSecret: string,
   request: Request,
-): Promise<{ access_token: string; id_token: string; expires_in: number }> {
+): Promise<{ access_token: string; id_token: string; expires_in: number; refresh_token?: string }> {
   const res = await fetch(OIDC.token, {
     method: 'POST',
     headers: {
@@ -54,6 +54,26 @@ export function parseIdToken(token: string): Record<string, unknown> {
   const padded = payload.replace(/-/g, '+').replace(/_/g, '/');
   const pad = (4 - (padded.length % 4)) % 4;
   return JSON.parse(atob(padded + '='.repeat(pad)));
+}
+
+export async function refreshTokens(
+  token: string,
+  clientId: string,
+  clientSecret: string,
+): Promise<{ access_token: string; expires_in: number; refresh_token?: string }> {
+  const res = await fetch(OIDC.token, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      Authorization: `Basic ${btoa(`${clientId}:${clientSecret}`)}`,
+    },
+    body: new URLSearchParams({
+      grant_type:    'refresh_token',
+      refresh_token: token,
+    }),
+  });
+  if (!res.ok) throw new Error(`Token refresh failed (${res.status})`);
+  return res.json();
 }
 
 export function logoutUrl(clientId: string, request: Request): string {

@@ -1,11 +1,14 @@
+import { refreshTokens } from './auth';
+
 const COOKIE = 'tvo_sess';
 const MAX_AGE = 60 * 60 * 8; // 8 hours
 
 export interface Session {
-  access_token: string;
-  user_id:      string;
-  email:        string | null;
-  expires_at:   number; // unix epoch
+  access_token:  string;
+  refresh_token: string | null;
+  user_id:       string;
+  email:         string | null;
+  expires_at:    number; // unix epoch
 }
 
 async function hmacKey(secret: string): Promise<CryptoKey> {
@@ -62,4 +65,41 @@ export async function getSession(request: Request, secret: string): Promise<Sess
 
 export function clearSessionCookie(): string {
   return `${COOKIE}=; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=0; Expires=Thu, 01 Jan 1970 00:00:00 GMT`;
+}
+
+/**
+ * Returns the current session, automatically refreshing the access token if it
+ * expires within 5 minutes. Returns `newCookie` when the caller must set a new
+ * Set-Cookie header on the response.
+ */
+export async function getValidSession(
+  request: Request,
+  secret: string,
+  clientId: string,
+  clientSecret: string,
+): Promise<{ session: Session; newCookie?: string } | null> {
+  const session = await getSession(request, secret);
+  if (!session) return null;
+
+  const now = Math.floor(Date.now() / 1000);
+  // Token still valid for more than 5 minutes — use as-is
+  if (session.expires_at > now + 300) return { session };
+
+  // Token expired or about to expire — try refresh
+  if (!session.refresh_token) return null;
+
+  try {
+    const tokens = await refreshTokens(session.refresh_token, clientId, clientSecret);
+    const fresh: Session = {
+      ...session,
+      access_token:  tokens.access_token,
+      refresh_token: tokens.refresh_token ?? session.refresh_token,
+      expires_at:    now + tokens.expires_in,
+    };
+    const newCookie = await createSessionCookie(fresh, secret);
+    return { session: fresh, newCookie };
+  } catch {
+    // Refresh failed — session is dead, force re-login
+    return null;
+  }
 }

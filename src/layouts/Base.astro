@@ -7,9 +7,10 @@ import { getSession } from '../lib/session';
 interface Props {
   title: string;
   description: string;
+  subscription?: { plan_id: string; status: string } | null;
 }
 
-const { title, description } = Astro.props;
+const { title, description, subscription = null } = Astro.props;
 const { env } = Astro.locals.runtime;
 const session = await getSession(Astro.request, env.SESSION_SECRET);
 const user = session ? { email: session.email } : null;
@@ -28,7 +29,7 @@ const user = session ? { email: session.email } : null;
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700&family=Noto+Sans+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
 </head>
 <body>
-  <Nav user={user} />
+  <Nav user={user} subscription={subscription} />
   <slot />
   <Footer />
 

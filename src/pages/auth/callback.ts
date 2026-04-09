@@ -37,10 +37,11 @@ export const GET: APIRoute = async ({ request, locals }) => {
     const claims = parseIdToken(tokens.id_token);
 
     const sessionCookie = await createSessionCookie({
-      access_token: tokens.access_token,
-      user_id:      claims.sub as string,
-      email:        (claims.email as string) ?? null,
-      expires_at:   Math.floor(Date.now() / 1000) + tokens.expires_in,
+      access_token:  tokens.access_token,
+      refresh_token: tokens.refresh_token ?? null,
+      user_id:       claims.sub as string,
+      email:         (claims.email as string) ?? null,
+      expires_at:    Math.floor(Date.now() / 1000) + tokens.expires_in,
     }, env.SESSION_SECRET);
 
     // Multiple Set-Cookie headers must be appended separately — joining with commas breaks cookie parsing

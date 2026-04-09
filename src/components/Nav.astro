@@ -1,8 +1,17 @@
 ---
 interface Props {
   user?: { email: string | null } | null;
+  subscription?: { plan_id: string; status: string } | null;
 }
-const { user } = Astro.props;
+const { user, subscription = null } = Astro.props;
+
+const isActiveSub = subscription && ['active', 'trialing'].includes(subscription.status);
+
+function planBadgeLabel(planId: string): string {
+  if (planId === 'monthly') return 'Monthly';
+  if (planId === 'annual')  return 'Annual';
+  return 'Pro';
+}
 ---
 
 <nav id="nav">
@@ -29,6 +38,12 @@ const { user } = Astro.props;
             </svg>
           </button>
           <div class="nav-dropdown" id="navDropdown" role="menu">
+            {isActiveSub && (
+              <div class="nav-dropdown-plan">
+                <span class="nav-plan-dot"></span>
+                {planBadgeLabel(subscription!.plan_id)} plan
+              </div>
+            )}
             <a href="/dashboard" class="nav-dropdown-item" role="menuitem">
               <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
                 <rect x="2" y="2" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.5"/>
@@ -199,6 +214,28 @@ const { user } = Astro.props;
 
   .nav-dropdown.open {
     display: block;
+  }
+
+  .nav-dropdown-plan {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 8px 12px 6px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--green);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 4px;
+  }
+
+  .nav-plan-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--green);
+    flex-shrink: 0;
   }
 
   .nav-dropdown-item {
