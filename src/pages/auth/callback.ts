@@ -32,8 +32,10 @@ export const GET: APIRoute = async ({ request, locals }) => {
 
   if (authData.state !== state) return redirect('/?auth_error=1');
 
+  const oidc = { authorizeUrl: env.OIDC_AUTHORIZE_URL, tokenUrl: env.OIDC_TOKEN_URL, logoutUrl: env.OIDC_LOGOUT_URL };
+
   try {
-    const tokens = await exchangeCode(code, env.ASGARDEO_CLIENT_ID, env.ASGARDEO_CLIENT_SECRET, request);
+    const tokens = await exchangeCode(oidc, code, env.ASGARDEO_CLIENT_ID, env.ASGARDEO_CLIENT_SECRET, request);
     const claims = parseIdToken(tokens.id_token);
 
     const sessionCookie = await createSessionCookie({

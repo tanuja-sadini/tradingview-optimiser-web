@@ -9,7 +9,8 @@ export const GET: APIRoute = async ({ request, locals }) => {
   const safeNext = next.startsWith('/') && !next.startsWith('//') ? next : '/dashboard';
 
   const state = crypto.randomUUID();
-  const authUrl = loginUrl(env.ASGARDEO_CLIENT_ID, state, request);
+  const oidc = { authorizeUrl: env.OIDC_AUTHORIZE_URL, tokenUrl: env.OIDC_TOKEN_URL, logoutUrl: env.OIDC_LOGOUT_URL };
+  const authUrl = loginUrl(oidc, env.ASGARDEO_CLIENT_ID, state, request);
 
   return new Response(null, {
     status: 302,

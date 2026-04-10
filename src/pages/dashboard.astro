@@ -3,7 +3,8 @@ import Base from '../layouts/Base.astro';
 import { getValidSession, parseAccessToken } from '../lib/session';
 
 const { env } = Astro.locals.runtime;
-const result = await getValidSession(Astro.request, env.SESSION_SECRET, env.ASGARDEO_CLIENT_ID, env.ASGARDEO_CLIENT_SECRET);
+const oidc = { authorizeUrl: env.OIDC_AUTHORIZE_URL, tokenUrl: env.OIDC_TOKEN_URL, logoutUrl: env.OIDC_LOGOUT_URL };
+const result = await getValidSession(Astro.request, env.SESSION_SECRET, env.ASGARDEO_CLIENT_ID, env.ASGARDEO_CLIENT_SECRET, oidc);
 
 if (!result) {
   return Astro.redirect('/auth/login?next=/dashboard');

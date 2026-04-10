@@ -1,17 +1,15 @@
-const ASGARDEO_BASE = 'https://api.asgardeo.io/t/tvoprod';
-
-export const OIDC = {
-  authorize: `${ASGARDEO_BASE}/oauth2/authorize`,
-  token:     `${ASGARDEO_BASE}/oauth2/token`,
-  logout:    `${ASGARDEO_BASE}/oidc/logout`,
-};
+export interface OIDCConfig {
+  authorizeUrl: string;
+  tokenUrl:     string;
+  logoutUrl:    string;
+}
 
 function origin(request: Request): string {
   const u = new URL(request.url);
   return `${u.protocol}//${u.host}`;
 }
 
-export function loginUrl(clientId: string, state: string, request: Request): string {
+export function loginUrl(config: OIDCConfig, clientId: string, state: string, request: Request): string {
   const params = new URLSearchParams({
     response_type: 'code',
     client_id:     clientId,
@@ -19,16 +17,17 @@ export function loginUrl(clientId: string, state: string, request: Request): str
     scope:         'openid profile email',
     state,
   });
-  return `${OIDC.authorize}?${params}`;
+  return `${config.authorizeUrl}?${params}`;
 }
 
 export async function exchangeCode(
+  config: OIDCConfig,
   code: string,
   clientId: string,
   clientSecret: string,
   request: Request,
 ): Promise<{ access_token: string; id_token: string; expires_in: number; refresh_token?: string }> {
-  const res = await fetch(OIDC.token, {
+  const res = await fetch(config.tokenUrl, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
@@ -57,11 +56,12 @@ export function parseIdToken(token: string): Record<string, unknown> {
 }
 
 export async function refreshTokens(
+  config: OIDCConfig,
   token: string,
   clientId: string,
   clientSecret: string,
 ): Promise<{ access_token: string; expires_in: number; refresh_token?: string }> {
-  const res = await fetch(OIDC.token, {
+  const res = await fetch(config.tokenUrl, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
@@ -76,10 +76,10 @@ export async function refreshTokens(
   return res.json();
 }
 
-export function logoutUrl(clientId: string, request: Request): string {
+export function buildLogoutUrl(config: OIDCConfig, clientId: string, request: Request): string {
   const params = new URLSearchParams({
     client_id:                clientId,
     post_logout_redirect_uri: `${origin(request)}/auth/callback`,
   });
-  return `${OIDC.logout}?${params}`;
+  return `${config.logoutUrl}?${params}`;
 }

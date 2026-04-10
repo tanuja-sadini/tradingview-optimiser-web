@@ -1,4 +1,4 @@
-import { refreshTokens } from './auth';
+import { refreshTokens, type OIDCConfig } from './auth';
 
 const COOKIE = 'tvo_sess';
 const MAX_AGE = 60 * 60 * 8; // 8 hours
@@ -89,6 +89,7 @@ export async function getValidSession(
   secret: string,
   clientId: string,
   clientSecret: string,
+  oidc: OIDCConfig,
 ): Promise<{ session: Session; newCookie?: string } | null> {
   const session = await getSession(request, secret);
   if (!session) return null;
@@ -101,7 +102,7 @@ export async function getValidSession(
   if (!session.refresh_token) return null;
 
   try {
-    const tokens = await refreshTokens(session.refresh_token, clientId, clientSecret);
+    const tokens = await refreshTokens(oidc, session.refresh_token, clientId, clientSecret);
     const fresh: Session = {
       ...session,
       access_token:  tokens.access_token,
