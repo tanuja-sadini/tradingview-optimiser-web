@@ -63,6 +63,18 @@ export async function getSession(request: Request, secret: string): Promise<Sess
   return session;
 }
 
+/** Decodes a JWT payload without verifying the signature. Returns null on failure. */
+export function parseAccessToken(token: string): Record<string, unknown> | null {
+  try {
+    const [, payload] = token.split('.');
+    const padded = payload.replace(/-/g, '+').replace(/_/g, '/');
+    const pad = (4 - (padded.length % 4)) % 4;
+    return JSON.parse(atob(padded + '='.repeat(pad)));
+  } catch {
+    return null;
+  }
+}
+
 export function clearSessionCookie(): string {
   return `${COOKIE}=; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=0; Expires=Thu, 01 Jan 1970 00:00:00 GMT`;
 }

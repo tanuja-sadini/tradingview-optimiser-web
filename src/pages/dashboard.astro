@@ -1,6 +1,6 @@
 ---
 import Base from '../layouts/Base.astro';
-import { getValidSession } from '../lib/session';
+import { getValidSession, parseAccessToken } from '../lib/session';
 
 const { env } = Astro.locals.runtime;
 const result = await getValidSession(Astro.request, env.SESSION_SECRET, env.ASGARDEO_CLIENT_ID, env.ASGARDEO_CLIENT_SECRET);
@@ -11,6 +11,9 @@ if (!result) {
 
 const { session, newCookie } = result;
 if (newCookie) Astro.response.headers.append('Set-Cookie', newCookie);
+
+const tokenClaims = parseAccessToken(session.access_token);
+const email = (tokenClaims?.email as string) ?? session.email ?? '—';
 
 // Fetch user profile from backend
 let profile: {
@@ -123,8 +126,29 @@ const checkoutActivated  = params.get('activated') === '1';       // confirmed a
         )}
       </div>
 
-      <!-- Usage card -->
+      <!-- Account card -->
       <div class="dash-card">
+        <div class="dash-card-label">Account</div>
+        <div class="account-rows">
+          <div class="account-row">
+            <span class="account-key">Email</span>
+            <span class="account-val">{email}</span>
+          </div>
+          <div class="account-row">
+            <span class="account-key">User ID</span>
+            <span class="account-val mono account-uid">{session.user_id}</span>
+          </div>
+          <div class="account-row">
+            <span class="account-key">Download</span>
+            <a href="/download" class="account-link">
+              Get the app for macOS, Windows &amp; Linux →
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Usage card -->
+      <div class="dash-card dash-card-full">
         <div class="dash-card-label">Usage — this month</div>
         {Object.keys(usage).length > 0 ? (
           <div class="usage-list">
@@ -396,7 +420,43 @@ const checkoutActivated  = params.get('activated') === '1';       // confirmed a
   color: var(--text-muted);
 }
 
+/* Account */
+.account-rows { display: flex; flex-direction: column; gap: 14px; }
+
+.account-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  font-size: 13px;
+}
+
+.account-key { color: var(--text-muted); flex-shrink: 0; }
+
+.account-val {
+  color: var(--text-primary);
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.account-uid {
+  font-size: 11px;
+  color: var(--text-muted);
+  font-weight: 400;
+}
+
+.account-link {
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.account-link:hover { text-decoration: underline; }
+
 @media (max-width: 640px) {
   .dash-grid { grid-template-columns: 1fr; }
+  .dash-card-full { grid-column: 1; }
 }
 </style>
