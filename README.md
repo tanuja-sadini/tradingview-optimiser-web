@@ -20,6 +20,9 @@ Create `.dev.vars` in the project root (gitignored) with:
 ASGARDEO_CLIENT_ID=<your value>
 ASGARDEO_CLIENT_SECRET=<your value>
 SESSION_SECRET=<openssl rand -hex 32>
+OIDC_AUTHORIZE_URL=<IDP authorize endpoint>
+OIDC_TOKEN_URL=<IDP token endpoint>
+OIDC_LOGOUT_URL=<IDP logout endpoint>
 ```
 
 ```bash
@@ -51,9 +54,12 @@ Set these in the Cloudflare Pages dashboard (Settings → Environment Variables)
 
 | Variable | Description |
 |----------|-------------|
-| `ASGARDEO_CLIENT_ID` | Asgardeo web app client ID |
-| `ASGARDEO_CLIENT_SECRET` | Asgardeo web app client secret |
+| `ASGARDEO_CLIENT_ID` | OIDC client ID |
+| `ASGARDEO_CLIENT_SECRET` | OIDC client secret |
 | `SESSION_SECRET` | Random 32-byte hex string for signing session cookies |
+| `OIDC_AUTHORIZE_URL` | OIDC authorization endpoint |
+| `OIDC_TOKEN_URL` | OIDC token endpoint |
+| `OIDC_LOGOUT_URL` | OIDC logout endpoint |
 
 ---
 
@@ -67,9 +73,11 @@ src/
     dashboard.astro           # User dashboard (protected)
     download.astro            # Public download page (macOS, Windows, Linux)
     auth/
-      login.ts                # Redirects to Asgardeo OIDC
+      login.ts                # Redirects to OIDC provider
       callback.ts             # Exchanges code, sets session cookie
-      logout.ts               # Clears session, redirects to Asgardeo logout
+      logout.ts               # Clears session, redirects to OIDC logout
+    checkout/
+      [plan].ts               # GET — auth gate + direct Stripe checkout redirect
     api/
       checkout.ts             # POST — proxies to backend /v1/checkout
       me.ts                   # GET  — proxies to backend /v1/me
@@ -92,12 +100,21 @@ CLAUDE.md                     # Agent instructions and design system
 
 ## Auth Flow
 
-1. `/auth/login` — generates state, redirects to Asgardeo authorize endpoint
-2. Asgardeo redirects to `/auth/callback?code=...&state=...`
-3. `/auth/callback` — exchanges code for tokens, sets signed HttpOnly session cookie, redirects to dashboard
-4. `/auth/logout` — clears cookie, redirects to Asgardeo RP-initiated logout (post-logout lands back at `/auth/callback` → redirects to `/`)
+1. `/auth/login` — generates state, redirects to OIDC provider authorize endpoint
+2. OIDC provider redirects to `/auth/callback?code=...&state=...`
+3. `/auth/callback` — exchanges code for tokens, sets signed HttpOnly session cookie, redirects to `next` (stored in temp cookie)
+4. `/auth/logout` — clears cookie, redirects to OIDC RP-initiated logout (post-logout lands back at `/auth/callback` → redirects to `/`)
 
-Session is an HMAC-SHA256 signed cookie (`tvo_sess`) containing the Asgardeo access token, user ID, email, and expiry. 8-hour lifetime.
+Session is an HMAC-SHA256 signed cookie (`tvo_sess`) containing the access token, user ID, email, and expiry. 8-hour lifetime.
+
+OIDC endpoint URLs are configured via `OIDC_AUTHORIZE_URL`, `OIDC_TOKEN_URL`, and `OIDC_LOGOUT_URL` env vars — no code changes needed to switch providers.
+
+## Checkout Flow (unauthenticated)
+
+Unauthenticated users clicking a subscribe button go to `/checkout/[plan]`, which:
+1. Redirects to `/auth/login?next=/checkout/[plan]` if no session
+2. After auth, `/checkout/[plan]` checks `/v1/me` — redirects existing paid subscribers to `/dashboard`
+3. Otherwise calls `/v1/checkout` and redirects to Stripe hosted checkout
 
 ## Backend API
 

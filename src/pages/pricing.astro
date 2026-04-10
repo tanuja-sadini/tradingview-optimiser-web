@@ -98,7 +98,7 @@ function planLabel(planId: string): string {
         ) : isLoggedIn ? (
           <button class="btn-ghost plan-cta" data-plan="monthly">Subscribe Monthly</button>
         ) : (
-          <a href="/auth/login?next=/pricing" class="btn-ghost plan-cta">Get Started</a>
+          <a href="/checkout/monthly" class="btn-ghost plan-cta">Get Started</a>
         )}
       </div>
 
@@ -130,7 +130,7 @@ function planLabel(planId: string): string {
         ) : isLoggedIn ? (
           <button class="btn-primary plan-cta" data-plan="annual">Subscribe Annually</button>
         ) : (
-          <a href="/auth/login?next=/pricing" class="btn-primary plan-cta">Get Started</a>
+          <a href="/checkout/annual" class="btn-primary plan-cta">Get Started</a>
         )}
       </div>
 

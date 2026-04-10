@@ -20,15 +20,17 @@ description: Shared project context — current state, tech stack, and key decis
 - `src/pages/download.astro` — public download page (macOS, Windows, Linux)
 - `src/layouts/Base.astro` — shared layout, reads session and passes user to Nav
 - `src/styles/global.css` — CSS custom properties and global styles
-- `src/lib/auth.ts` — Asgardeo OIDC helpers
+- `src/pages/checkout/[plan].ts` — unauthenticated checkout gate; redirects to login then directly to Stripe
+- `src/lib/auth.ts` — OIDC helpers (IDP-agnostic; endpoint URLs from env vars)
 - `src/lib/session.ts` — HMAC-signed HttpOnly cookie session management
 
 ## Auth
-- **Provider:** Asgardeo OIDC (tenant: `tvoprod`)
+- **Provider:** Asgardeo OIDC (tenant: `tvoprod`) — but IDP-agnostic via env vars
 - **Flow:** Authorization Code (server-side, confidential client)
 - **Session:** HMAC-SHA256 signed HttpOnly cookie `tvo_sess`, 8hr lifetime
 - **Routes:** `/auth/login` → `/auth/callback` → `/auth/logout`
-- Credentials stored in Cloudflare Pages env vars and `.dev.vars` locally
+- Credentials and OIDC endpoint URLs stored in Cloudflare Pages env vars and `.dev.vars` locally
+- OIDC endpoint env vars: `OIDC_AUTHORIZE_URL`, `OIDC_TOKEN_URL`, `OIDC_LOGOUT_URL`
 
 ## Backend API
 - Base URL: `https://api.tradingviewoptimizer.com`
@@ -43,7 +45,8 @@ description: Shared project context — current state, tech stack, and key decis
 ## Pricing
 - Monthly: $19.99/month
 - Annual: $199.99/year ($16.67/month, saves ~$40/year)
-- Checkout flow: pricing page → `/api/checkout` → Stripe hosted page → `/dashboard?checkout=success`
+- Checkout flow (logged-in): pricing page → `/api/checkout` → Stripe hosted page → `/dashboard?checkout=success`
+- Checkout flow (unauthenticated): `/checkout/[plan]` → `/auth/login?next=/checkout/[plan]` → Stripe (existing paid subscribers redirected to `/dashboard`)
 - On checkout success: polls `/api/me` every 2s for up to 15s until subscription is active
 - All new users start on `plan_id: "free"`, `status: "active"` — treated as unpaid throughout the UI
 - Paid plans: `plan_id: "monthly"` or `"annual"` with `status: "active"` or `"trialing"`
