@@ -36,9 +36,10 @@ try {
   console.error('[dashboard] /v1/me fetch error:', e);
 }
 
-const sub   = profile?.subscription ?? null;
-const usage = profile?.usage ?? {};
+const sub      = profile?.subscription ?? null;
+const usage    = profile?.usage ?? {};
 const isActive = sub && ['active', 'trialing'].includes(sub.status);
+const isPaidSub = isActive && sub?.plan_id !== 'free';
 
 function formatDate(ts: number | null | undefined): string {
   if (!ts) return '—';
@@ -62,7 +63,7 @@ const DOWNLOAD_URL = '#'; // TODO: replace with actual .dmg URL
 <Base
   title="Dashboard — TradingView Strategy Optimizer"
   description="Your TVO account dashboard."
-  subscription={sub}
+  subscription={isPaidSub ? sub : null}
 >
 
 <section id="dashboard">
@@ -73,7 +74,6 @@ const DOWNLOAD_URL = '#'; // TODO: replace with actual .dmg URL
         <h1 class="dash-title">Dashboard</h1>
         <p class="dash-email">{session.email ?? session.user_id}</p>
       </div>
-      <a href="/auth/logout" class="btn-ghost sign-out">Sign out</a>
     </div>
 
     {checkoutActivated && (
@@ -98,7 +98,7 @@ const DOWNLOAD_URL = '#'; // TODO: replace with actual .dmg URL
       <div class="dash-card">
         <div class="dash-card-label">Subscription</div>
 
-        {isActive ? (
+        {isPaidSub ? (
           <div class="sub-details">
             <div class="sub-row">
               <span class="sub-key">Plan</span>
@@ -115,10 +115,11 @@ const DOWNLOAD_URL = '#'; // TODO: replace with actual .dmg URL
               <span class="sub-key">Renews</span>
               <span class="sub-val">{formatDate(sub?.current_period_end)}</span>
             </div>
+            <button class="btn-ghost sub-manage-btn" id="manageSubBtn">Manage subscription</button>
           </div>
         ) : (
           <div class="sub-empty">
-            <p>No active subscription.</p>
+            <p>You're on the free plan.</p>
             <a href="/pricing" class="btn-primary sub-upgrade-btn">View Plans</a>
           </div>
         )}
@@ -155,16 +156,12 @@ const DOWNLOAD_URL = '#'; // TODO: replace with actual .dmg URL
             </div>
           </div>
 
-          {isActive ? (
-            <a href={DOWNLOAD_URL} class="btn-primary download-btn" download>
-              <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-                <path d="M8 2v8m0 0l-3-3m3 3l3-3M3 13h10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-              Download for macOS
-            </a>
-          ) : (
-            <a href="/pricing" class="btn-ghost download-btn">Subscribe to Download</a>
-          )}
+          <a href={DOWNLOAD_URL} class="btn-primary download-btn" download>
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <path d="M8 2v8m0 0l-3-3m3 3l3-3M3 13h10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Download for macOS
+          </a>
         </div>
 
         <div class="download-other">
@@ -225,6 +222,28 @@ const DOWNLOAD_URL = '#'; // TODO: replace with actual .dmg URL
 
     setTimeout(poll, INTERVAL);
   }
+
+  // Manage subscription
+  const manageBtn = document.getElementById('manageSubBtn') as HTMLButtonElement | null;
+  if (manageBtn) {
+    manageBtn.addEventListener('click', async () => {
+      manageBtn.disabled = true;
+      manageBtn.textContent = 'Loading…';
+      try {
+        const res = await fetch('/api/portal', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ return_url: window.location.href }),
+        });
+        if (!res.ok) throw new Error(await res.text());
+        const { url } = await res.json();
+        window.location.href = url;
+      } catch {
+        manageBtn.disabled = false;
+        manageBtn.textContent = 'Manage subscription';
+      }
+    });
+  }
 </script>
 
 </Base>
@@ -259,7 +278,6 @@ const DOWNLOAD_URL = '#'; // TODO: replace with actual .dmg URL
   color: var(--text-muted);
 }
 
-.sign-out { font-size: 13px; }
 
 .alert {
   max-width: 900px;
@@ -385,6 +403,13 @@ const DOWNLOAD_URL = '#'; // TODO: replace with actual .dmg URL
 }
 
 .sub-upgrade-btn { align-self: flex-start; }
+
+.sub-manage-btn {
+  align-self: flex-start;
+  margin-top: 8px;
+  font-size: 12px;
+  padding: 6px 12px;
+}
 
 /* Usage */
 .usage-list { display: flex; flex-direction: column; gap: 12px; }

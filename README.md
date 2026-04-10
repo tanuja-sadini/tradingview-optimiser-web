@@ -72,6 +72,7 @@ src/
     api/
       checkout.ts             # POST — proxies to backend /v1/checkout
       me.ts                   # GET  — proxies to backend /v1/me
+      portal.ts               # POST — proxies to backend /v1/portal (Stripe billing portal)
   components/
     Nav.astro                 # Auth-aware nav with account dropdown
     Footer.astro
@@ -105,6 +106,7 @@ All authenticated calls proxy through server-side API routes (access token never
 |-------|-----------------|
 | `GET /api/me` | `GET /v1/me` |
 | `POST /api/checkout` | `POST /v1/checkout` |
+| `POST /api/portal` | `POST /v1/portal` (Stripe billing portal session) |
 
 Backend base: `https://api.tradingviewoptimizer.com`
 

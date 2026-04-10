@@ -35,14 +35,20 @@ description: Shared project context — current state, tech stack, and key decis
 - Key endpoints used by the website:
   - `GET /v1/me` — user profile, subscription, usage
   - `POST /v1/checkout` — create Stripe checkout session (`plan: monthly | annual`)
+  - `POST /v1/portal` — create Stripe billing portal session (cancel/switch plan)
   - `POST /v1/waitlist` — join waitlist
-- Server-side proxies at `/api/me` and `/api/checkout` keep the access token out of the browser
+- Server-side proxies at `/api/me`, `/api/checkout`, and `/api/portal` keep the access token out of the browser
 
 ## Pricing
 - Monthly: $19.99/month
 - Annual: $199.99/year ($16.67/month, saves ~$40/year)
 - Checkout flow: pricing page → `/api/checkout` → Stripe hosted page → `/dashboard?checkout=success`
 - On checkout success: polls `/api/me` every 2s for up to 15s until subscription is active
+- All new users start on `plan_id: "free"`, `status: "active"` — treated as unpaid throughout the UI
+- Paid plans: `plan_id: "monthly"` or `"annual"` with `status: "active"` or `"trialing"`
+- Download is always free and available to all logged-in users — the app handles its own subscription gating
+- Paid subscribers see "Manage subscription" in dashboard → Stripe billing portal (`/api/portal`)
+- Pricing page blocks second subscription: if already on paid plan, subscribe buttons replaced with "Switch plan via dashboard →"
 
 ## Design System (summary)
 - Dark backgrounds only — primary bg `#1E1F22`, panels `#2B2D31`, cards `#313338`
