@@ -1,0 +1,235 @@
+---
+import Base from '../layouts/Base.astro';
+
+// TODO: replace with actual download URLs when available
+const DOWNLOADS = {
+  mac:     '#',
+  windows: '#',
+  linux:   '#',
+};
+
+const VERSION = '1.0.0'; // TODO: update with each release
+---
+
+<Base
+  title="Download — TradingView Strategy Optimizer"
+  description="Download TradingView Strategy Optimizer for macOS, Windows, and Linux."
+>
+
+<section id="download-hero">
+  <div class="container">
+    <p class="section-label reveal">Download</p>
+    <h1 class="download-title reveal">Get TVO for your platform.</h1>
+    <p class="download-sub reveal">Free to download. Subscription required to run optimizations.</p>
+  </div>
+</section>
+
+<section id="download-platforms">
+  <div class="container">
+    <div class="platform-list reveal">
+
+      <!-- macOS -->
+      <div class="platform-card">
+        <div class="platform-icon-wrap">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
+          </svg>
+        </div>
+        <div class="platform-info">
+          <div class="platform-name">macOS</div>
+          <div class="platform-meta">Universal binary &mdash; Apple Silicon &amp; Intel</div>
+          <div class="platform-req">macOS 12 Monterey or later</div>
+        </div>
+        <a href={DOWNLOADS.mac} class="btn-primary platform-dl-btn" download>
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M8 2v8m0 0l-3-3m3 3l3-3M3 13h10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          Download .dmg
+        </a>
+      </div>
+
+      <!-- Windows -->
+      <div class="platform-card">
+        <div class="platform-icon-wrap">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M3 5.557L10.025 4.56l.004 6.96-7.021.04L3 5.557zm7.02 6.803l.006 6.968L3.005 18.32l-.001-6.008 7.016.048zm.84-7.931L21 2.857v8.344l-10.14.08V4.43zm.006 8.36L21 12.72v8.424l-10.134-1.397-.006-6.957z"/>
+          </svg>
+        </div>
+        <div class="platform-info">
+          <div class="platform-name">Windows</div>
+          <div class="platform-meta">64-bit installer</div>
+          <div class="platform-req">Windows 10 or later</div>
+        </div>
+        <a href={DOWNLOADS.windows} class="btn-ghost platform-dl-btn" download>
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M8 2v8m0 0l-3-3m3 3l3-3M3 13h10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          Download .exe
+        </a>
+      </div>
+
+      <!-- Linux -->
+      <div class="platform-card">
+        <div class="platform-icon-wrap">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M12.504 0c-.155 0-.315.008-.48.021C7.309.358 4.745 4.09 5.36 8.421c.017.12.048.236.073.355-.07.09-.136.183-.198.28-.763 1.17-1.18 2.558-1.11 4.024.067 1.393.568 2.727 1.434 3.844l.021.028c-.038.09-.077.18-.112.274-.584 1.577-.61 3.405.393 5.217.967 1.745 2.657 2.9 4.603 3.246 1.025.184 2.066.158 3.073-.105 1.072-.28 2.065-.838 2.873-1.642.804-.803 1.336-1.82 1.54-2.94.195-1.063.105-2.15-.237-3.12l-.03-.088c.016-.022.032-.044.047-.067.874-1.277 1.285-2.86 1.053-4.46-.229-1.582-1.063-3.015-2.3-3.992l-.06-.046a.617.617 0 0 0 .044-.077c.422-.823.607-1.752.526-2.692C16.707 2.217 14.804.384 12.504 0zm-.023 1.548c1.78.029 3.315 1.377 3.505 3.166.068.648-.046 1.298-.323 1.871-.252.522-.642.97-1.128 1.294-.386.26-.817.43-1.265.52l-.086.014-.052-.07c-.53-.716-.99-1.48-1.367-2.285-.32-.686-.552-1.407-.668-2.152-.032-.206-.049-.415-.049-.625.001-.958.371-1.843 1.015-2.497a3.42 3.42 0 0 1 .418-.236zm1.997 9.384c.342.077.669.2.974.363.623.335 1.13.847 1.452 1.473.317.615.435 1.318.335 2.007-.104.713-.422 1.373-.9 1.898-.488.535-1.12.905-1.824 1.07-.73.172-1.494.125-2.193-.135a3.893 3.893 0 0 1-1.654-1.178 3.888 3.888 0 0 1-.793-1.891c-.085-.688.026-1.39.317-2.012.294-.625.76-1.148 1.348-1.508.32-.196.667-.338 1.03-.42l.095-.02.12.025c.236.054.468.12.693.228z"/>
+          </svg>
+        </div>
+        <div class="platform-info">
+          <div class="platform-name">Linux</div>
+          <div class="platform-meta">AppImage &mdash; works on most distros</div>
+          <div class="platform-req">Ubuntu 20.04 / equivalent or later</div>
+        </div>
+        <a href={DOWNLOADS.linux} class="btn-ghost platform-dl-btn" download>
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M8 2v8m0 0l-3-3m3 3l3-3M3 13h10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          Download .AppImage
+        </a>
+      </div>
+
+    </div>
+
+    <div class="download-note reveal">
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+        <circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.5"/>
+        <path d="M8 7v4M8 5.5v.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+      A subscription is required to run optimizations. <a href="/pricing">View pricing →</a>
+    </div>
+
+  </div>
+</section>
+
+</Base>
+
+<style>
+#download-hero {
+  padding: 96px 24px 48px;
+  text-align: center;
+  position: relative;
+  z-index: 1;
+}
+
+#download-hero::before {
+  content: '';
+  position: absolute;
+  top: -60px; left: 50%;
+  transform: translateX(-50%);
+  width: 600px; height: 360px;
+  background: radial-gradient(ellipse at center, rgba(88,101,242,0.12) 0%, transparent 65%);
+  pointer-events: none;
+}
+
+.download-title {
+  font-size: clamp(28px, 4vw, 44px);
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  color: var(--text-primary);
+  margin-bottom: 12px;
+}
+
+.download-sub {
+  font-size: 16px;
+  color: var(--text-muted);
+  max-width: 420px;
+  margin: 0 auto;
+  line-height: 1.7;
+}
+
+#download-platforms {
+  padding: 24px 24px 120px;
+  position: relative;
+  z-index: 1;
+}
+
+.platform-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 720px;
+  margin: 0 auto 32px;
+}
+
+.platform-card {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  background: var(--bg-panels);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 24px 28px;
+}
+
+.platform-icon-wrap {
+  color: var(--text-muted);
+  flex-shrink: 0;
+  width: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.platform-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.platform-name {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 3px;
+}
+
+.platform-meta {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-bottom: 2px;
+}
+
+.platform-req {
+  font-size: 12px;
+  color: var(--text-muted);
+  opacity: 0.7;
+}
+
+.platform-dl-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.download-note {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  font-size: 13px;
+  color: var(--text-muted);
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.download-note a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.download-note a:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 560px) {
+  .platform-card {
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  .platform-dl-btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+</style>

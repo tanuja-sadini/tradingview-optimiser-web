@@ -65,6 +65,7 @@ src/
     index.astro               # Homepage
     pricing.astro             # Pricing page (monthly / annual)
     dashboard.astro           # User dashboard (protected)
+    download.astro            # Public download page (macOS, Windows, Linux)
     auth/
       login.ts                # Redirects to Asgardeo OIDC
       callback.ts             # Exchanges code, sets session cookie

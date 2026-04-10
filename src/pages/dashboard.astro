@@ -56,8 +56,6 @@ const params = new URL(Astro.request.url).searchParams;
 const checkoutActivating = params.get('checkout') === 'success';  // polling state
 const checkoutActivated  = params.get('activated') === '1';       // confirmed active
 
-// Placeholder — update with real download URL when available
-const DOWNLOAD_URL = '#'; // TODO: replace with actual .dmg URL
 ---
 
 <Base
@@ -140,46 +138,6 @@ const DOWNLOAD_URL = '#'; // TODO: replace with actual .dmg URL
         ) : (
           <p class="dash-empty-text">No usage recorded yet.</p>
         )}
-      </div>
-
-      <!-- Download card (full width) -->
-      <div class="dash-card dash-card-full">
-        <div class="dash-card-label">Download</div>
-        <div class="download-row">
-          <div class="download-platform">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" class="platform-icon">
-              <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
-            </svg>
-            <div>
-              <div class="platform-name">macOS</div>
-              <div class="platform-note">Universal binary — Apple Silicon &amp; Intel</div>
-            </div>
-          </div>
-
-          <a href={DOWNLOAD_URL} class="btn-primary download-btn" download>
-            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-              <path d="M8 2v8m0 0l-3-3m3 3l3-3M3 13h10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-            Download for macOS
-          </a>
-        </div>
-
-        <div class="download-other">
-          <span class="platform-coming">
-            <svg width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-              <rect x="2" y="3" width="12" height="11" rx="1.5" stroke="currentColor" stroke-width="1.5"/>
-              <path d="M2 7h12" stroke="currentColor" stroke-width="1.5"/>
-            </svg>
-            Windows — available
-          </span>
-          <span class="platform-coming">
-            <svg width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-              <circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.5"/>
-              <path d="M8 5v3l2 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-            </svg>
-            Linux — available
-          </span>
-        </div>
       </div>
 
     </div>
@@ -438,61 +396,7 @@ const DOWNLOAD_URL = '#'; // TODO: replace with actual .dmg URL
   color: var(--text-muted);
 }
 
-/* Download */
-.download-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  margin-bottom: 16px;
-  flex-wrap: wrap;
-}
-
-.download-platform {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-}
-
-.platform-icon { color: var(--text-muted); }
-
-.platform-name {
-  font-size: 15px;
-  font-weight: 600;
-  color: var(--text-primary);
-  margin-bottom: 2px;
-}
-
-.platform-note {
-  font-size: 12px;
-  color: var(--text-muted);
-}
-
-.download-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  white-space: nowrap;
-}
-
-.download-other {
-  display: flex;
-  gap: 20px;
-  flex-wrap: wrap;
-  border-top: 1px solid var(--border);
-  padding-top: 16px;
-}
-
-.platform-coming {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 12px;
-  color: var(--text-muted);
-}
-
 @media (max-width: 640px) {
   .dash-grid { grid-template-columns: 1fr; }
-  .dash-card-full { grid-column: 1; }
 }
 </style>

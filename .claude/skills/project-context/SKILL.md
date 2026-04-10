@@ -17,6 +17,7 @@ description: Shared project context — current state, tech stack, and key decis
 - `src/pages/index.astro` — homepage
 - `src/pages/pricing.astro` — pricing page (monthly $19.99 / annual $199.99)
 - `src/pages/dashboard.astro` — protected user dashboard
+- `src/pages/download.astro` — public download page (macOS, Windows, Linux)
 - `src/layouts/Base.astro` — shared layout, reads session and passes user to Nav
 - `src/styles/global.css` — CSS custom properties and global styles
 - `src/lib/auth.ts` — Asgardeo OIDC helpers
