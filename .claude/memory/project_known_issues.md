@@ -15,3 +15,5 @@ type: project
 **Why:** All three identified during initial build session (2026-04-09). Not blocking launch but are UX gaps for returning subscribers.
 
 **How to apply:** Address these after core auth + subscription flow is confirmed working end-to-end.
+
+4. If an user without a session clicks on a subscribe button, user should be send to asgardeo for login/signup but when gets back, directly sent to stripe for sub completion.

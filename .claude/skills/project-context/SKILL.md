@@ -1,5 +1,5 @@
 ---
-name: context
+name: project-context
 description: Shared project context — current state, tech stack, and key decisions for use by other skills
 ---
 

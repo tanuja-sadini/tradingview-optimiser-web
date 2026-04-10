@@ -33,7 +33,7 @@ Promotional website for the TradingView Strategy Optimizer desktop app. Full pro
 ├── website-brief.md            # Full product brief — source of truth for all copy
 └── .claude/
     └── skills/                 # Project slash commands
-        ├── context/SKILL.md    # Shared project context for skills
+        ├── project-context/SKILL.md  # Shared project context for skills
         ├── component/SKILL.md  # /component — scaffold a UI component
         ├── page/SKILL.md       # /page — scaffold a full page
         ├── deploy/SKILL.md     # /deploy — deploy to Cloudflare Pages
