@@ -92,6 +92,7 @@ src/
   lib/
     auth.ts                   # Asgardeo OIDC helpers
     session.ts                # HMAC-signed HttpOnly cookie session
+    subscription.ts           # interpretSubscription() — derives trial/paid/expired/billing-issue state
   styles/global.css
 public/                       # Static assets
 website-brief.md              # Source of truth for all copy and features
@@ -113,8 +114,22 @@ OIDC endpoint URLs are configured via `OIDC_AUTHORIZE_URL`, `OIDC_TOKEN_URL`, an
 
 Unauthenticated users clicking a subscribe button go to `/checkout/[plan]`, which:
 1. Redirects to `/auth/login?next=/checkout/[plan]` if no session
-2. After auth, `/checkout/[plan]` checks `/v1/me` — redirects existing paid subscribers to `/dashboard`
+2. After auth, `/checkout/[plan]` checks `/v1/me` — redirects existing **paid** (monthly/annual + active) subscribers to `/dashboard`. Trial users (`plan_id=trial`, any status) are passed through to checkout.
 3. Otherwise calls `/v1/checkout` and redirects to Stripe hosted checkout
+
+## Subscription model
+
+Backend `/v1/me` returns `subscription: { plan_id, status, current_period_end }`. New users start on a 7-day free trial with `plan_id='trial'` and `status='active'`; once the trial ends, status flips to `expired`. The website does not gate any features (the desktop app does), but renders different UI per state. All subscription logic is centralized in `src/lib/subscription.ts`:
+
+| State | Condition | UI behavior |
+|-------|-----------|-------------|
+| `trial-active` | `plan='trial'`, `status='active'` | Yellow "trial — N days left" badge in nav; trial card on dashboard with upgrade CTA; banner on pricing page |
+| `trial-expired` | `plan='trial'`, `status!='active'` | Red "trial expired" badge; expired card on dashboard; warning banner on pricing |
+| `paid-active` | `plan='monthly'\|'annual'`, `status='active'` | Green plan badge; active subscription card with renewal date and "manage" button |
+| `billing-issue` | `plan='monthly'\|'annual'`, `status='past_due'\|'paused'\|'canceled'\|'incomplete'` | Red badge; "manage billing" CTA pointing to Stripe portal |
+| `none` | No subscription | "View plans" CTA |
+
+Trial users with `status='active'` retain `hasAccess=true` and can subscribe at any time to upgrade.
 
 ## Backend API
 

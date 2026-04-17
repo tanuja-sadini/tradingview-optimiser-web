@@ -23,6 +23,7 @@ description: Shared project context — current state, tech stack, and key decis
 - `src/pages/checkout/[plan].ts` — unauthenticated checkout gate; redirects to login then directly to Stripe
 - `src/lib/auth.ts` — OIDC helpers (IDP-agnostic; endpoint URLs from env vars)
 - `src/lib/session.ts` — HMAC-signed HttpOnly cookie session management
+- `src/lib/subscription.ts` — `interpretSubscription()` derives `trial-active | trial-expired | paid-active | billing-issue | none` state used everywhere
 
 ## Auth
 - **Provider:** Asgardeo OIDC (tenant: `tvoprod`) — but IDP-agnostic via env vars
@@ -42,17 +43,20 @@ description: Shared project context — current state, tech stack, and key decis
   - `POST /v1/waitlist` — join waitlist
 - Server-side proxies at `/api/me`, `/api/checkout`, and `/api/portal` keep the access token out of the browser
 
-## Pricing
+## Pricing & Subscription
 - Monthly: $19.99/month
 - Annual: $199.99/year ($16.67/month, saves ~$40/year)
 - Checkout flow (logged-in): pricing page → `/api/checkout` → Stripe hosted page → `/dashboard?checkout=success`
-- Checkout flow (unauthenticated): `/checkout/[plan]` → `/auth/login?next=/checkout/[plan]` → Stripe (existing paid subscribers redirected to `/dashboard`)
-- On checkout success: polls `/api/me` every 2s for up to 15s until subscription is active
-- All new users start on `plan_id: "free"`, `status: "active"` — treated as unpaid throughout the UI
-- Paid plans: `plan_id: "monthly"` or `"annual"` with `status: "active"` or `"trialing"`
-- Download is always free and available to all logged-in users — the app handles its own subscription gating
+- Checkout flow (unauthenticated): `/checkout/[plan]` → `/auth/login?next=/checkout/[plan]` → Stripe (existing **paid** subscribers — monthly/annual + active — redirected to `/dashboard`; trial users are passed through)
+- On checkout success: dashboard polls `/api/me` every 2s for up to 15s, redirecting once `plan_id` flips to `monthly`/`annual` with `status='active'`
+- New users start on `plan_id='trial'`, `status='active'` — 7-day free trial. When trial ends, status flips to `expired`. There is no `free` plan and no `trialing` status.
+- Paid plans: `plan_id='monthly'` or `'annual'` with `status='active'`
+- Other statuses (`past_due`, `paused`, `canceled`, `incomplete`) on paid plans → "billing-issue" UI directing to Stripe portal
+- The website does NOT gate features — the desktop app reads `/v1/me` and gates itself. The website just renders the right state.
+- Download is public; no auth required
 - Paid subscribers see "Manage subscription" in dashboard → Stripe billing portal (`/api/portal`)
-- Pricing page blocks second subscription: if already on paid plan, subscribe buttons replaced with "Switch plan via dashboard →"
+- Pricing page blocks second paid subscription: if already on paid plan, subscribe buttons replaced with "Switch plan via dashboard →". Trial users see normal subscribe CTAs.
+- All subscription-state derivation goes through `interpretSubscription()` in `src/lib/subscription.ts` — do not re-implement the rules in pages/components
 
 ## Design System (summary)
 - Dark backgrounds only — primary bg `#1E1F22`, panels `#2B2D31`, cards `#313338`

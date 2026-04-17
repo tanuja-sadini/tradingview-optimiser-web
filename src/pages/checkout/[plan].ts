@@ -17,7 +17,8 @@ export const GET: APIRoute = async ({ params, request, locals }) => {
     });
   }
 
-  // If user already has an active paid subscription, send them to the dashboard
+  // If user already has an active PAID subscription, send them to the dashboard.
+  // Trial users (plan_id=trial, any status) are allowed through to checkout.
   try {
     const meRes = await fetch('https://api.tradingviewoptimizer.com/v1/me', {
       headers: { Authorization: `Bearer ${session.access_token}` },
@@ -25,7 +26,7 @@ export const GET: APIRoute = async ({ params, request, locals }) => {
     if (meRes.ok) {
       const profile = await meRes.json() as { subscription?: { plan_id: string; status: string } };
       const sub = profile.subscription;
-      if (sub && ['active', 'trialing'].includes(sub.status) && sub.plan_id !== 'free') {
+      if (sub && sub.status === 'active' && (sub.plan_id === 'monthly' || sub.plan_id === 'annual')) {
         return new Response(null, { status: 302, headers: { Location: '/dashboard' } });
       }
     }

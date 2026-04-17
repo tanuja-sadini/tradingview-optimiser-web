@@ -1,6 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
 import { getValidSession } from '../lib/session';
+import { interpretSubscription, planLabel, type Subscription } from '../lib/subscription';
 
 const { env } = Astro.locals.runtime;
 const oidc = { authorizeUrl: env.OIDC_AUTHORIZE_URL, tokenUrl: env.OIDC_TOKEN_URL, logoutUrl: env.OIDC_LOGOUT_URL };
@@ -11,7 +12,7 @@ if (result?.newCookie) Astro.response.headers.append('Set-Cookie', result.newCoo
 const isLoggedIn = !!session;
 
 // Fetch subscription for logged-in users
-let currentSub: { plan_id: string; status: string } | null = null;
+let currentSub: Subscription | null = null;
 if (session) {
   try {
     const res = await fetch('https://api.tradingviewoptimizer.com/v1/me', {
@@ -26,24 +27,18 @@ if (session) {
   }
 }
 
-const isActiveSub = currentSub && ['active', 'trialing'].includes(currentSub.status) && currentSub.plan_id !== 'free';
+const sub = interpretSubscription(currentSub);
 
 const MONTHLY_PRICE  = 19.99;
 const ANNUAL_PRICE   = 199.99;
 const ANNUAL_MONTHLY = (ANNUAL_PRICE / 12).toFixed(2); // 16.67
 const ANNUAL_SAVINGS = ((MONTHLY_PRICE * 12) - ANNUAL_PRICE).toFixed(0); // 40
-
-function planLabel(planId: string): string {
-  if (planId === 'monthly') return 'Monthly';
-  if (planId === 'annual')  return 'Annual';
-  return planId.charAt(0).toUpperCase() + planId.slice(1);
-}
 ---
 
 <Base
   title="Pricing — TradingView Strategy Optimizer"
   description="Simple, transparent pricing. Monthly or annual. Full access on all plans. Cancel anytime."
-  subscription={isActiveSub ? currentSub : null}
+  subscription={currentSub}
 >
 
 <section id="pricing-hero">
@@ -57,13 +52,44 @@ function planLabel(planId: string): string {
 <section id="plans">
   <div class="container">
 
-    {isActiveSub && (
+    {sub.state === 'paid-active' && (
       <div class="current-sub-banner reveal">
         <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true">
           <path d="M13.5 4.5L6.5 11.5L3 8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
-        You're on the <strong>{planLabel(currentSub!.plan_id)}</strong> plan.
+        You're on the <strong>{planLabel(sub.plan_id)}</strong> plan.
         <a href="/dashboard">Manage subscription →</a>
+      </div>
+    )}
+
+    {sub.state === 'trial-active' && (
+      <div class="current-sub-banner trial-banner reveal">
+        <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.5"/>
+          <path d="M8 4.5v4l2.5 1.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        Your free trial ends in <strong>{sub.daysRemaining} day{sub.daysRemaining === 1 ? '' : 's'}</strong>. Pick a plan to keep your access.
+      </div>
+    )}
+
+    {sub.state === 'trial-expired' && (
+      <div class="current-sub-banner expired-banner reveal">
+        <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.5"/>
+          <path d="M5.5 5.5l5 5M10.5 5.5l-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        Your free trial has ended. Subscribe below to restore access.
+      </div>
+    )}
+
+    {sub.state === 'billing-issue' && (
+      <div class="current-sub-banner expired-banner reveal">
+        <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.5"/>
+          <path d="M8 5v3.5M8 10.5v.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        Your subscription needs attention.
+        <a href="/dashboard">Manage billing →</a>
       </div>
     )}
 
@@ -91,9 +117,9 @@ function planLabel(planId: string): string {
           <li>All data stored locally — zero cloud</li>
         </ul>
 
-        {isActiveSub && currentSub!.plan_id === 'monthly' ? (
+        {sub.state === 'paid-active' && sub.plan_id === 'monthly' ? (
           <span class="plan-current">Current plan</span>
-        ) : isActiveSub ? (
+        ) : sub.state === 'paid-active' ? (
           <a href="/dashboard" class="btn-ghost plan-cta plan-switch">Switch plan via dashboard →</a>
         ) : isLoggedIn ? (
           <button class="btn-ghost plan-cta" data-plan="monthly">Subscribe Monthly</button>
@@ -123,9 +149,9 @@ function planLabel(planId: string): string {
           <li>Early access to new features</li>
         </ul>
 
-        {isActiveSub && currentSub!.plan_id === 'annual' ? (
+        {sub.state === 'paid-active' && sub.plan_id === 'annual' ? (
           <span class="plan-current">Current plan</span>
-        ) : isActiveSub ? (
+        ) : sub.state === 'paid-active' ? (
           <a href="/dashboard" class="btn-primary plan-cta plan-switch">Switch plan via dashboard →</a>
         ) : isLoggedIn ? (
           <button class="btn-primary plan-cta" data-plan="annual">Subscribe Annually</button>
@@ -289,6 +315,22 @@ function planLabel(planId: string): string {
 
 .current-sub-banner strong { color: var(--green); font-weight: 600; }
 .current-sub-banner a { color: var(--green); text-decoration: underline; margin-left: auto; white-space: nowrap; }
+
+.trial-banner {
+  background: rgba(240,178,50,0.08);
+  border-color: rgba(240,178,50,0.25);
+  color: var(--yellow);
+}
+.trial-banner strong { color: var(--yellow); }
+.trial-banner a      { color: var(--yellow); }
+
+.expired-banner {
+  background: rgba(242,63,67,0.08);
+  border-color: rgba(242,63,67,0.25);
+  color: var(--red);
+}
+.expired-banner strong { color: var(--red); }
+.expired-banner a      { color: var(--red); }
 
 /* ── Current plan CTA ── */
 .plan-current {

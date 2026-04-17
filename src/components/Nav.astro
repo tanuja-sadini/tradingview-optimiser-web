@@ -1,17 +1,13 @@
 ---
+import { interpretSubscription, planLabel, type Subscription } from '../lib/subscription';
+
 interface Props {
   user?: { email: string | null } | null;
-  subscription?: { plan_id: string; status: string } | null;
+  subscription?: Subscription | null;
 }
 const { user, subscription = null } = Astro.props;
 
-const isActiveSub = subscription && ['active', 'trialing'].includes(subscription.status);
-
-function planBadgeLabel(planId: string): string {
-  if (planId === 'monthly') return 'Monthly';
-  if (planId === 'annual')  return 'Annual';
-  return 'Pro';
-}
+const sub = interpretSubscription(subscription);
 ---
 
 <nav id="nav">
@@ -39,10 +35,28 @@ function planBadgeLabel(planId: string): string {
             </svg>
           </button>
           <div class="nav-dropdown" id="navDropdown" role="menu">
-            {isActiveSub && (
+            {sub.state === 'paid-active' && (
               <div class="nav-dropdown-plan">
                 <span class="nav-plan-dot"></span>
-                {planBadgeLabel(subscription!.plan_id)} plan
+                {planLabel(sub.plan_id)} plan
+              </div>
+            )}
+            {sub.state === 'trial-active' && (
+              <div class="nav-dropdown-plan nav-dropdown-plan--trial">
+                <span class="nav-plan-dot"></span>
+                Trial — {sub.daysRemaining} day{sub.daysRemaining === 1 ? '' : 's'} left
+              </div>
+            )}
+            {sub.state === 'trial-expired' && (
+              <div class="nav-dropdown-plan nav-dropdown-plan--expired">
+                <span class="nav-plan-dot"></span>
+                Trial expired
+              </div>
+            )}
+            {sub.state === 'billing-issue' && (
+              <div class="nav-dropdown-plan nav-dropdown-plan--issue">
+                <span class="nav-plan-dot"></span>
+                Billing issue
               </div>
             )}
             <a href="/dashboard" class="nav-dropdown-item" role="menuitem">
@@ -235,9 +249,13 @@ function planBadgeLabel(planId: string): string {
     width: 6px;
     height: 6px;
     border-radius: 50%;
-    background: var(--green);
+    background: currentColor;
     flex-shrink: 0;
   }
+
+  .nav-dropdown-plan--trial    { color: var(--yellow); }
+  .nav-dropdown-plan--expired,
+  .nav-dropdown-plan--issue    { color: var(--red); }
 
   .nav-dropdown-item {
     display: flex;

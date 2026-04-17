@@ -1,6 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
 import { getValidSession, parseAccessToken } from '../lib/session';
+import { interpretSubscription, planLabel, type Subscription } from '../lib/subscription';
 
 const { env } = Astro.locals.runtime;
 const oidc = { authorizeUrl: env.OIDC_AUTHORIZE_URL, tokenUrl: env.OIDC_TOKEN_URL, logoutUrl: env.OIDC_LOGOUT_URL };
@@ -19,7 +20,7 @@ const email = (tokenClaims?.email as string) ?? session.email ?? '—';
 // Fetch user profile from backend
 let profile: {
   user_id: string;
-  subscription: { plan_id: string; status: string; current_period_end: number | null } | null;
+  subscription: Subscription | null;
   usage: Record<string, { count: number }>;
 } | null = null;
 let profileError: string | null = null;
@@ -40,20 +41,13 @@ try {
   console.error('[dashboard] /v1/me fetch error:', e);
 }
 
-const sub      = profile?.subscription ?? null;
-const usage    = profile?.usage ?? {};
-const isActive = sub && ['active', 'trialing'].includes(sub.status);
-const isPaidSub = isActive && sub?.plan_id !== 'free';
+const rawSub = profile?.subscription ?? null;
+const sub    = interpretSubscription(rawSub);
+const usage  = profile?.usage ?? {};
 
 function formatDate(ts: number | null | undefined): string {
   if (!ts) return '—';
   return new Date(ts * 1000).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
-}
-
-function planLabel(planId: string | undefined): string {
-  if (planId === 'monthly') return 'Monthly';
-  if (planId === 'annual')  return 'Annual';
-  return 'Free';
 }
 
 const params = new URL(Astro.request.url).searchParams;
@@ -65,7 +59,7 @@ const checkoutActivated  = params.get('activated') === '1';       // confirmed a
 <Base
   title="Dashboard — TradingView Strategy Optimizer"
   description="Your TVO account dashboard."
-  subscription={isPaidSub ? sub : null}
+  subscription={rawSub}
 >
 
 <section id="dashboard">
@@ -100,28 +94,83 @@ const checkoutActivated  = params.get('activated') === '1';       // confirmed a
       <div class="dash-card">
         <div class="dash-card-label">Subscription</div>
 
-        {isPaidSub ? (
+        {sub.state === 'paid-active' && (
           <div class="sub-details">
             <div class="sub-row">
               <span class="sub-key">Plan</span>
-              <span class="sub-val">{planLabel(sub?.plan_id)}</span>
+              <span class="sub-val">{planLabel(sub.plan_id)}</span>
             </div>
             <div class="sub-row">
               <span class="sub-key">Status</span>
               <span class="status-badge status-active">
                 <span class="status-dot"></span>
-                {sub?.status === 'trialing' ? 'Trial' : 'Active'}
+                Active
               </span>
             </div>
             <div class="sub-row">
               <span class="sub-key">Renews</span>
-              <span class="sub-val">{formatDate(sub?.current_period_end)}</span>
+              <span class="sub-val">{formatDate(sub.current_period_end)}</span>
             </div>
             <button class="btn-ghost sub-manage-btn" id="manageSubBtn">Manage subscription</button>
           </div>
-        ) : (
+        )}
+
+        {sub.state === 'trial-active' && (
+          <div class="sub-details">
+            <div class="sub-row">
+              <span class="sub-key">Plan</span>
+              <span class="sub-val">Free trial</span>
+            </div>
+            <div class="sub-row">
+              <span class="sub-key">Status</span>
+              <span class="status-badge status-trial">
+                <span class="status-dot"></span>
+                {sub.daysRemaining} day{sub.daysRemaining === 1 ? '' : 's'} left
+              </span>
+            </div>
+            <div class="sub-row">
+              <span class="sub-key">Trial ends</span>
+              <span class="sub-val">{formatDate(sub.current_period_end)}</span>
+            </div>
+            <a href="/pricing" class="btn-primary sub-upgrade-btn">Upgrade Now</a>
+          </div>
+        )}
+
+        {sub.state === 'trial-expired' && (
           <div class="sub-empty">
-            <p>You're on the free plan.</p>
+            <div class="sub-row">
+              <span class="sub-key">Status</span>
+              <span class="status-badge status-expired">
+                <span class="status-dot"></span>
+                Trial expired
+              </span>
+            </div>
+            <p>Your free trial has ended. Subscribe to restore access to the optimizer.</p>
+            <a href="/pricing" class="btn-primary sub-upgrade-btn">View Plans</a>
+          </div>
+        )}
+
+        {sub.state === 'billing-issue' && (
+          <div class="sub-empty">
+            <div class="sub-row">
+              <span class="sub-key">Plan</span>
+              <span class="sub-val">{planLabel(sub.plan_id)}</span>
+            </div>
+            <div class="sub-row">
+              <span class="sub-key">Status</span>
+              <span class="status-badge status-expired">
+                <span class="status-dot"></span>
+                {sub.status.replace('_', ' ')}
+              </span>
+            </div>
+            <p>Your subscription needs attention. Manage billing to restore access.</p>
+            <button class="btn-primary sub-upgrade-btn" id="manageSubBtn">Manage billing</button>
+          </div>
+        )}
+
+        {sub.state === 'none' && (
+          <div class="sub-empty">
+            <p>No subscription on file.</p>
             <a href="/pricing" class="btn-primary sub-upgrade-btn">View Plans</a>
           </div>
         )}
@@ -183,9 +232,11 @@ const checkoutActivated  = params.get('activated') === '1';       // confirmed a
         if (res.status === 401) return;           // session gone — stop
         const data = await res.json();
         const sub  = data?.subscription;
-        const active = sub && ['active', 'trialing'].includes(sub.status);
+        const paidActive =
+          sub && sub.status === 'active' &&
+          (sub.plan_id === 'monthly' || sub.plan_id === 'annual');
 
-        if (active) {
+        if (paidActive) {
           window.location.replace('/dashboard?activated=1');
           return;
         }
@@ -359,7 +410,9 @@ const checkoutActivated  = params.get('activated') === '1';       // confirmed a
   font-weight: 500;
 }
 
-.status-active { color: var(--green); }
+.status-active  { color: var(--green); }
+.status-trial   { color: var(--yellow); text-transform: none; }
+.status-expired { color: var(--red); text-transform: capitalize; }
 
 .status-dot {
   width: 6px;
@@ -369,9 +422,11 @@ const checkoutActivated  = params.get('activated') === '1';       // confirmed a
   animation: pulse 2.5s ease-in-out infinite;
 }
 
+.status-expired .status-dot { animation: none; }
+
 @keyframes pulse {
-  0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(35,165,90,0.4); }
-  50%       { opacity: 0.7; box-shadow: 0 0 0 4px rgba(35,165,90,0); }
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.55; }
 }
 
 .sub-empty {

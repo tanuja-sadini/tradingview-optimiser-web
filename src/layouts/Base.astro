@@ -3,11 +3,12 @@ import '../styles/global.css';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
 import { getSession } from '../lib/session';
+import type { Subscription } from '../lib/subscription';
 
 interface Props {
   title: string;
   description: string;
-  subscription?: { plan_id: string; status: string } | null;
+  subscription?: Subscription | null;
 }
 
 const { title, description, subscription = null } = Astro.props;
