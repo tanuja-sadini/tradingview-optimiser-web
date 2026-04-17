@@ -17,6 +17,8 @@ export type SubState =
   | 'trial-active'
   | 'trial-expired'
   | 'paid-active'
+  | 'paid-canceled'
+  | 'paid-past-due'
   | 'billing-issue'
   | 'none';
 
@@ -58,8 +60,17 @@ export function interpretSubscription(
   if (plan_id === 'trial') {
     state = status === 'active' ? 'trial-active' : 'trial-expired';
   } else if (plan_id === 'monthly' || plan_id === 'annual') {
-    state = status === 'active' ? 'paid-active' : 'billing-issue';
+    if (status === 'active') state = 'paid-active';
+    else if (status === 'canceled') state = 'paid-canceled';
+    else if (status === 'past_due') state = 'paid-past-due';
+    else state = 'billing-issue';
   }
+
+  const hasAccess =
+    state === 'trial-active' ||
+    state === 'paid-active' ||
+    state === 'paid-canceled' ||
+    state === 'paid-past-due';
 
   return {
     state,
@@ -67,9 +78,9 @@ export function interpretSubscription(
     status,
     current_period_end,
     daysRemaining,
-    isPaid: state === 'paid-active',
+    isPaid: state === 'paid-active' || state === 'paid-canceled' || state === 'paid-past-due',
     isTrial: plan_id === 'trial',
-    hasAccess: state === 'trial-active' || state === 'paid-active',
+    hasAccess,
   };
 }
 

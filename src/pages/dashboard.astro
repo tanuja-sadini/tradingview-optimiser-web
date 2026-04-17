@@ -136,6 +136,46 @@ const checkoutActivated  = params.get('activated') === '1';       // confirmed a
           </div>
         )}
 
+        {sub.state === 'paid-canceled' && (
+          <div class="sub-details">
+            <div class="sub-row">
+              <span class="sub-key">Plan</span>
+              <span class="sub-val">{planLabel(sub.plan_id)}</span>
+            </div>
+            <div class="sub-row">
+              <span class="sub-key">Status</span>
+              <span class="status-badge status-canceled">
+                <span class="status-dot"></span>
+                Canceled
+              </span>
+            </div>
+            <div class="sub-row">
+              <span class="sub-key">Access until</span>
+              <span class="sub-val">{formatDate(sub.current_period_end)}</span>
+            </div>
+            <p class="sub-notice">Your subscription has been canceled. You have access until the end of your current period.</p>
+            <button class="btn-ghost sub-manage-btn" id="manageSubBtn">Manage subscription</button>
+          </div>
+        )}
+
+        {sub.state === 'paid-past-due' && (
+          <div class="sub-details">
+            <div class="sub-row">
+              <span class="sub-key">Plan</span>
+              <span class="sub-val">{planLabel(sub.plan_id)}</span>
+            </div>
+            <div class="sub-row">
+              <span class="sub-key">Status</span>
+              <span class="status-badge status-warning">
+                <span class="status-dot"></span>
+                Past due
+              </span>
+            </div>
+            <p class="sub-notice">Your last payment failed. Stripe will retry automatically — update your payment method to avoid losing access.</p>
+            <button class="btn-primary sub-upgrade-btn" id="manageSubBtn">Update payment method</button>
+          </div>
+        )}
+
         {sub.state === 'trial-active' && (
           <div class="sub-details">
             <div class="sub-row">
@@ -171,7 +211,7 @@ const checkoutActivated  = params.get('activated') === '1';       // confirmed a
           </div>
         )}
 
-        {sub.state === 'billing-issue' && (
+        {sub.state === 'billing-issue' && sub.status === 'paused' && (
           <div class="sub-empty">
             <div class="sub-row">
               <span class="sub-key">Plan</span>
@@ -181,7 +221,43 @@ const checkoutActivated  = params.get('activated') === '1';       // confirmed a
               <span class="sub-key">Status</span>
               <span class="status-badge status-expired">
                 <span class="status-dot"></span>
-                {sub.status.replace('_', ' ')}
+                Paused
+              </span>
+            </div>
+            <p>Your subscription is paused. Resume it to restore access.</p>
+            <button class="btn-primary sub-upgrade-btn" id="manageSubBtn">Resume subscription</button>
+          </div>
+        )}
+
+        {sub.state === 'billing-issue' && sub.status === 'incomplete' && (
+          <div class="sub-empty">
+            <div class="sub-row">
+              <span class="sub-key">Plan</span>
+              <span class="sub-val">{planLabel(sub.plan_id)}</span>
+            </div>
+            <div class="sub-row">
+              <span class="sub-key">Status</span>
+              <span class="status-badge status-expired">
+                <span class="status-dot"></span>
+                Incomplete
+              </span>
+            </div>
+            <p>Your payment requires additional authentication. Complete it to activate your subscription.</p>
+            <button class="btn-primary sub-upgrade-btn" id="manageSubBtn">Complete payment</button>
+          </div>
+        )}
+
+        {sub.state === 'billing-issue' && sub.status !== 'paused' && sub.status !== 'incomplete' && (
+          <div class="sub-empty">
+            <div class="sub-row">
+              <span class="sub-key">Plan</span>
+              <span class="sub-val">{planLabel(sub.plan_id)}</span>
+            </div>
+            <div class="sub-row">
+              <span class="sub-key">Status</span>
+              <span class="status-badge status-expired">
+                <span class="status-dot"></span>
+                {sub.status.replace(/_/g, ' ')}
               </span>
             </div>
             <p>Your subscription needs attention. Manage billing to restore access.</p>
@@ -433,9 +509,11 @@ const checkoutActivated  = params.get('activated') === '1';       // confirmed a
   font-weight: 500;
 }
 
-.status-active  { color: var(--green); }
-.status-trial   { color: var(--yellow); text-transform: none; }
-.status-expired { color: var(--red); text-transform: capitalize; }
+.status-active   { color: var(--green); }
+.status-trial    { color: var(--yellow); text-transform: none; }
+.status-expired  { color: var(--red); text-transform: capitalize; }
+.status-canceled { color: var(--red); }
+.status-warning  { color: var(--yellow); }
 
 .status-dot {
   width: 6px;
@@ -445,7 +523,8 @@ const checkoutActivated  = params.get('activated') === '1';       // confirmed a
   animation: pulse 2.5s ease-in-out infinite;
 }
 
-.status-expired .status-dot { animation: none; }
+.status-expired .status-dot,
+.status-canceled .status-dot { animation: none; }
 
 @keyframes pulse {
   0%, 100% { opacity: 1; }
@@ -458,7 +537,8 @@ const checkoutActivated  = params.get('activated') === '1';       // confirmed a
   gap: 16px;
 }
 
-.sub-empty p {
+.sub-empty p,
+.sub-notice {
   font-size: 13px;
   color: var(--text-muted);
 }
