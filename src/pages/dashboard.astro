@@ -21,20 +21,31 @@ const email = (tokenClaims?.email as string) ?? session.email ?? '—';
 let profile: {
   user_id: string;
   subscription: Subscription | null;
-  usage: Record<string, { count: number }>;
 } | null = null;
 let profileError: string | null = null;
+let usage: Record<string, { count: number }> = {};
 
 try {
-  const res = await fetch('https://api.tradingviewoptimizer.com/v1/me', {
-    headers: { Authorization: `Bearer ${session.access_token}` },
-  });
-  if (res.ok) {
-    profile = await res.json();
+  const [meRes, usageRes] = await Promise.all([
+    fetch('https://api.tradingviewoptimizer.com/v1/me', {
+      headers: { Authorization: `Bearer ${session.access_token}` },
+    }),
+    fetch('https://api.tradingviewoptimizer.com/v1/usage', {
+      headers: { Authorization: `Bearer ${session.access_token}` },
+    }),
+  ]);
+  if (meRes.ok) {
+    profile = await meRes.json();
   } else {
-    const body = await res.text();
-    profileError = `${res.status}: ${body}`;
+    const body = await meRes.text();
+    profileError = `${meRes.status}: ${body}`;
     console.error('[dashboard] /v1/me failed:', profileError);
+  }
+  if (usageRes.ok) {
+    const usageBody = await usageRes.json();
+    usage = usageBody.usage ?? {};
+  } else {
+    console.error('[dashboard] /v1/usage failed:', usageRes.status);
   }
 } catch (e) {
   profileError = String(e);
@@ -43,7 +54,17 @@ try {
 
 const rawSub = profile?.subscription ?? null;
 const sub    = interpretSubscription(rawSub);
-const usage  = profile?.usage ?? {};
+
+const usageLabels: Record<string, string> = {
+  app_startups:        'App startups',
+  projects_created:    'Projects created',
+  configs_created:     'Configs created',
+  params_extracted:    'Params extracted',
+  runs_started:        'Runs started',
+  runs_completed:      'Runs completed',
+  combinations_tested: 'Combinations tested',
+  deploys_started:     'Deploys started',
+};
 
 function formatDate(ts: number | null | undefined): string {
   if (!ts) return '—';
@@ -201,11 +222,11 @@ const checkoutActivated  = params.get('activated') === '1';       // confirmed a
       <div class="dash-card dash-card-full">
         <div class="dash-card-label">Usage — this month</div>
         {Object.keys(usage).length > 0 ? (
-          <div class="usage-list">
+          <div class="usage-grid">
             {Object.entries(usage).map(([metric, data]) => (
-              <div class="usage-row">
-                <span class="usage-metric">{metric}</span>
+              <div class="usage-tile">
                 <span class="usage-count mono">{data.count}</span>
+                <span class="usage-metric">{usageLabels[metric] ?? metric.replace(/_/g, ' ')}</span>
               </div>
             ))}
           </div>
@@ -452,25 +473,35 @@ const checkoutActivated  = params.get('activated') === '1';       // confirmed a
 }
 
 /* Usage */
-.usage-list { display: flex; flex-direction: column; gap: 12px; }
-
-.usage-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 13px;
+.usage-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 12px;
 }
 
-.usage-metric {
-  color: var(--text-muted);
-  text-transform: capitalize;
+.usage-tile {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px 16px;
 }
 
 .usage-count {
-  font-size: 22px;
+  font-size: 28px;
   font-weight: 700;
   color: var(--text-primary);
-  letter-spacing: -0.02em;
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+
+.usage-metric {
+  font-size: 11px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
 }
 
 .dash-empty-text {
