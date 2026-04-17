@@ -1,4 +1,8 @@
 ---
+interface Props {
+  user?: { email: string | null } | null;
+}
+const { user = null } = Astro.props;
 ---
 
 <footer>
@@ -19,8 +23,8 @@
       <div class="footer-col">
         <div class="footer-col-title">Account</div>
         <a href="/dashboard">Dashboard</a>
-        <a href="/auth/login">Sign In</a>
-        <a href="/auth/logout">Sign Out</a>
+        {!user && <a href="/auth/login">Sign In</a>}
+        {user && <a href="/auth/logout">Sign Out</a>}
       </div>
       <div class="footer-col">
         <div class="footer-col-title">Company</div>

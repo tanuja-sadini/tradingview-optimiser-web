@@ -1,6 +1,11 @@
 ---
 import Base from '../layouts/Base.astro';
 import DashboardPreview from '../components/DashboardPreview.astro';
+import { getSession } from '../lib/session';
+
+const { env } = Astro.locals.runtime;
+const session = await getSession(Astro.request, env.SESSION_SECRET);
+const user = session ? { email: session.email } : null;
 ---
 
 <Base
@@ -316,7 +321,7 @@ import DashboardPreview from '../components/DashboardPreview.astro';
           </svg>
           View Pricing
         </a>
-        <a href="/auth/login" class="btn-ghost cta-btn">Sign In</a>
+        {!user && <a href="/auth/login" class="btn-ghost cta-btn">Sign In</a>}
       </div>
       <p class="cta-note">macOS · Windows · Linux &nbsp;·&nbsp; All data stored locally</p>
     </div>

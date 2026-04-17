@@ -32,7 +32,7 @@ const user = session ? { email: session.email } : null;
 <body>
   <Nav user={user} subscription={subscription} />
   <slot />
-  <Footer />
+  <Footer user={user} />
 
   <script>
     // Nav scroll effect

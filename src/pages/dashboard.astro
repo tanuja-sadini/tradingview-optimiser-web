@@ -271,7 +271,9 @@ const checkoutActivated  = params.get('activated') === '1';       // confirmed a
         });
         if (!res.ok) throw new Error(await res.text());
         const { url } = await res.json();
-        window.location.href = url;
+        window.open(url, '_blank', 'noopener,noreferrer');
+        manageBtn.disabled = false;
+        manageBtn.textContent = 'Manage subscription';
       } catch {
         manageBtn.disabled = false;
         manageBtn.textContent = 'Manage subscription';
