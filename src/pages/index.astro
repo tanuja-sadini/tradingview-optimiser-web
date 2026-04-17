@@ -4,7 +4,7 @@ import DashboardPreview from '../components/DashboardPreview.astro';
 ---
 
 <Base
-  title="TradingView Strategy Optimizer — The parameter optimizer TradingView doesn't have"
+  title="TradingView Optimizer — The parameter optimizer TradingView doesn't have"
   description="Automatically sweep every combination of your TradingView strategy parameters. Ranked results, heatmaps, one-click deploy. macOS, Windows, Linux."
 >
 
@@ -79,7 +79,7 @@ import DashboardPreview from '../components/DashboardPreview.astro';
       <div class="problem-card before">
         <div class="problem-card-label">
           <span class="label-dot" aria-hidden="true"></span>
-          Without TVO
+          Without TradingView Optimizer
         </div>
         <div class="terminal" aria-label="Manual backtesting terminal example">
           <div><span class="t-prompt"># </span><span class="t-out">Open settings dialog...</span></div>
@@ -97,7 +97,7 @@ import DashboardPreview from '../components/DashboardPreview.astro';
       <div class="problem-card after">
         <div class="problem-card-label">
           <span class="label-dot" aria-hidden="true"></span>
-          With TVO
+          With TradingView Optimizer
         </div>
         <div class="terminal" aria-label="Automated sweep terminal example">
           <div><span class="t-ok">✓ </span><span class="t-out">Parameters extracted from chart</span></div>
@@ -330,7 +330,7 @@ import DashboardPreview from '../components/DashboardPreview.astro';
 #hero {
   padding: 96px 24px 0;
   text-align: center;
-  overflow: visible;
+  overflow: hidden;
   position: relative;
   z-index: 1;
 }
@@ -494,6 +494,35 @@ import DashboardPreview from '../components/DashboardPreview.astro';
 
 @media (max-width: 720px) { .problem-grid { grid-template-columns: 1fr; } }
 
+@media (max-width: 600px) {
+  #hero { padding: 64px 16px 0; }
+
+  .hero-badge { font-size: 11px; padding: 4px 10px 4px 8px; }
+
+  .hero-stats { max-width: 100%; }
+  .hero-stat { padding: 12px 16px; }
+  .hero-stat-value { font-size: 18px; }
+
+  #problem { padding: 72px 16px; }
+  .problem-card { padding: 24px; }
+  .terminal { font-size: 11px; padding: 12px 14px; overflow-x: auto; }
+
+  #how-it-works { padding: 0 16px 72px; }
+  .how-header { margin-bottom: 40px; }
+
+  #features { padding: 0 16px 72px; }
+  .features-header { margin-bottom: 40px; }
+  .feature-card { padding: 24px; }
+
+  #analytics { padding: 0 16px 72px; }
+  .analytics-header { margin-bottom: 40px; }
+
+  #cta { padding: 0 16px 72px; }
+  .cta-card { padding: 40px 24px; }
+
+  .impact-row { grid-template-columns: 64px 1fr 44px; }
+}
+
 /* ── How It Works ── */
 #how-it-works { padding: 0 24px 120px; position: relative; z-index: 1; }
 .how-header { margin-bottom: 64px; }
@@ -620,7 +649,7 @@ import DashboardPreview from '../components/DashboardPreview.astro';
   padding: 72px 48px;
   text-align: center;
   position: relative;
-  overflow: hidden;
+  overflow: clip;
 }
 
 .cta-card::before {

@@ -4,7 +4,7 @@
 <footer>
   <div class="footer-inner container">
     <div class="footer-brand">
-      <span class="footer-logo">TVO</span>
+      <span class="footer-logo">TradingView Optimizer</span>
       <span class="footer-tagline">The parameter optimizer TradingView doesn't have.</span>
     </div>
 
@@ -30,7 +30,7 @@
   </div>
 
   <div class="footer-bottom container">
-    <span>&copy; {new Date().getFullYear()} TradingView Strategy Optimizer. All rights reserved.</span>
+    <span>&copy; {new Date().getFullYear()} TradingView Optimizer. All rights reserved.</span>
     <span class="footer-note">All data stored locally &mdash; zero cloud dependency.</span>
   </div>
 </footer>
@@ -110,5 +110,12 @@
     border-top: 1px solid var(--border);
     font-size: 11px;
     color: var(--text-muted);
+  }
+
+  @media (max-width: 600px) {
+    footer { padding: 36px 16px 20px; }
+    .footer-inner { gap: 28px; }
+    .footer-cols { gap: 28px; }
+    .footer-bottom { flex-direction: column; align-items: flex-start; }
   }
 </style>

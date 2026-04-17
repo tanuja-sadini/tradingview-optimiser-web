@@ -1,6 +1,6 @@
-# TradingView Strategy Optimizer — Website
+# TradingView Optimizer — Website
 
-Full marketing and subscription website for the TradingView Strategy Optimizer desktop app.
+Full marketing and subscription website for the TradingView Optimizer desktop app.
 
 **Production:** [tradingviewoptimizer.com](https://tradingviewoptimizer.com)  
 **Platform:** Cloudflare Pages  

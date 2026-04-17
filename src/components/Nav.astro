@@ -12,9 +12,9 @@ const sub = interpretSubscription(subscription);
 
 <nav id="nav">
   <div class="nav-inner">
-    <a href="/" class="nav-logo" aria-label="TradingView Strategy Optimizer">
+    <a href="/" class="nav-logo" aria-label="TradingView Optimizer">
       <img src="/logo.png" alt="" aria-hidden="true" class="nav-logo-icon" />
-      <span class="nav-logo-text">TVO</span>
+      <span class="nav-logo-text">TradingView Optimizer</span>
     </a>
 
     <ul class="nav-links" role="list">
@@ -26,6 +26,9 @@ const sub = interpretSubscription(subscription);
     </ul>
 
     <div class="nav-actions">
+      <button class="nav-hamburger" id="navHamburger" aria-label="Open menu" aria-expanded="false" aria-controls="navMobileMenu">
+        <span></span><span></span><span></span>
+      </button>
       {user ? (
         <div class="nav-account" id="navAccount">
           <button class="nav-account-btn" id="navAccountBtn" aria-haspopup="true" aria-expanded="false">
@@ -81,6 +84,30 @@ const sub = interpretSubscription(subscription);
         <>
           <a href="/auth/login" class="btn-ghost nav-cta">Log In</a>
           <a href="/pricing" class="btn-primary nav-cta">Get Started</a>
+        </>
+      )}
+    </div>
+  </div>
+
+  <!-- Mobile menu -->
+  <div class="nav-mobile-menu" id="navMobileMenu" aria-hidden="true">
+    <ul class="nav-mobile-links" role="list">
+      <li><a href="/#how-it-works">How It Works</a></li>
+      <li><a href="/#features">Features</a></li>
+      <li><a href="/#analytics">Analytics</a></li>
+      <li><a href="/pricing">Pricing</a></li>
+      <li><a href="/download">Download</a></li>
+    </ul>
+    <div class="nav-mobile-actions">
+      {user ? (
+        <>
+          <a href="/dashboard" class="btn-ghost nav-mobile-btn">Dashboard</a>
+          <a href="/auth/logout" class="btn-ghost nav-mobile-btn">Sign Out</a>
+        </>
+      ) : (
+        <>
+          <a href="/auth/login" class="btn-ghost nav-mobile-btn">Log In</a>
+          <a href="/pricing" class="btn-primary nav-mobile-btn">Get Started</a>
         </>
       )}
     </div>
@@ -285,12 +312,113 @@ const sub = interpretSubscription(subscription);
     margin: 4px 0;
   }
 
+  /* Hamburger */
+  .nav-hamburger {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5px;
+    width: 36px;
+    height: 36px;
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    padding: 8px;
+  }
+
+  .nav-hamburger span {
+    display: block;
+    height: 1.5px;
+    background: var(--text-muted);
+    border-radius: 2px;
+    transition: transform 0.2s, opacity 0.2s;
+  }
+
+  .nav-hamburger[aria-expanded="true"] span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+  .nav-hamburger[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+  .nav-hamburger[aria-expanded="true"] span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+
+  /* Mobile menu */
+  .nav-mobile-menu {
+    display: none;
+    background: rgba(30,31,34,0.97);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-top: 1px solid var(--border);
+    padding: 16px 24px 24px;
+  }
+
+  .nav-mobile-menu.open { display: block; }
+
+  .nav-mobile-links {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    margin-bottom: 16px;
+  }
+
+  .nav-mobile-links a {
+    display: block;
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--text-muted);
+    text-decoration: none;
+    padding: 10px 12px;
+    border-radius: var(--radius-sm);
+    transition: color 0.15s, background 0.15s;
+  }
+
+  .nav-mobile-links a:hover {
+    color: var(--text-primary);
+    background: var(--bg-panels);
+  }
+
+  .nav-mobile-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
+  }
+
+  .nav-mobile-btn {
+    width: 100%;
+    justify-content: center;
+    text-align: center;
+  }
+
   @media (max-width: 700px) {
     .nav-links { display: none; }
+    .nav-cta   { display: none; }
+    .nav-hamburger { display: flex; }
+    .nav-account { display: none; }
   }
 </style>
 
 <script>
+  // Hamburger toggle
+  const hamburger  = document.getElementById('navHamburger');
+  const mobileMenu = document.getElementById('navMobileMenu');
+
+  if (hamburger && mobileMenu) {
+    hamburger.addEventListener('click', () => {
+      const open = mobileMenu.classList.toggle('open');
+      hamburger.setAttribute('aria-expanded', String(open));
+      mobileMenu.setAttribute('aria-hidden', String(!open));
+    });
+
+    // Close mobile menu on link click
+    mobileMenu.querySelectorAll('a').forEach(a => {
+      a.addEventListener('click', () => {
+        mobileMenu.classList.remove('open');
+        hamburger.setAttribute('aria-expanded', 'false');
+        mobileMenu.setAttribute('aria-hidden', 'true');
+      });
+    });
+  }
+
   const btn      = document.getElementById('navAccountBtn');
   const dropdown = document.getElementById('navDropdown');
 

@@ -36,7 +36,7 @@ const ANNUAL_SAVINGS = ((MONTHLY_PRICE * 12) - ANNUAL_PRICE).toFixed(0); // 40
 ---
 
 <Base
-  title="Pricing — TradingView Strategy Optimizer"
+  title="Pricing — TradingView Optimizer"
   description="Simple, transparent pricing. Monthly or annual. Full access on all plans. Cancel anytime."
   subscription={currentSub}
 >
@@ -269,6 +269,7 @@ const ANNUAL_SAVINGS = ((MONTHLY_PRICE * 12) - ANNUAL_PRICE).toFixed(0); // 40
   text-align: center;
   position: relative;
   z-index: 1;
+  overflow: hidden;
 }
 
 #pricing-hero::before {
@@ -526,7 +527,7 @@ const ANNUAL_SAVINGS = ((MONTHLY_PRICE * 12) - ANNUAL_PRICE).toFixed(0); // 40
   margin: 0 auto;
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 8px;
 }
 
 .faq-item {
@@ -574,5 +575,12 @@ details[open] .faq-q::after {
 @media (max-width: 620px) {
   .plans-grid { grid-template-columns: 1fr; }
   .plan-badge { font-size: 10px; }
+  #pricing-hero { padding: 64px 16px 32px; }
+  #plans { padding: 32px 16px 56px; }
+  .plan-card { padding: 24px; }
+  .price-amount { font-size: 34px; }
+  #faq { padding: 0 16px 72px; }
+  .plans-footnote { flex-direction: column; align-items: center; gap: 12px; }
+  .current-sub-banner { flex-wrap: wrap; }
 }
 </style>

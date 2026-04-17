@@ -3,7 +3,7 @@ name: project-context
 description: Shared project context — current state, tech stack, and key decisions for use by other skills
 ---
 
-# Project Context — TradingView Strategy Optimizer Website
+# Project Context — TradingView Optimizer Website
 
 ## Tech Stack
 - **Framework:** Astro (`output: server`) with `@astrojs/cloudflare` adapter
