@@ -294,5 +294,17 @@
     .window-sidebar { display: none; }
     .results-table th:nth-child(n+7),
     .results-table td:nth-child(n+7) { display: none; }
+    .window-title { font-size: 11px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .run-info { gap: 8px; flex-wrap: wrap; padding: 6px 12px; }
+    .run-info-item:last-child { margin-left: 0 !important; }
+    .results-tabs { overflow-x: auto; gap: 0; }
+    .results-tab { white-space: nowrap; padding: 6px 10px; font-size: 11px; }
+  }
+
+  @media (max-width: 480px) {
+    .window-body { height: 240px; }
+    .results-table { font-size: 11px; }
+    .results-table th, .results-table td { padding: 6px 10px; }
+    .score-bar-bg { display: none; }
   }
 </style>

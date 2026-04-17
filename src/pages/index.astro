@@ -615,6 +615,10 @@ import WaitlistForm from '../components/WaitlistForm.astro';
   overflow: hidden;
 }
 
+@media (max-width: 480px) {
+  .waitlist-card { padding: 40px 20px; }
+}
+
 .waitlist-card::before {
   content: '';
   position: absolute;
@@ -627,4 +631,53 @@ import WaitlistForm from '../components/WaitlistForm.astro';
 
 .waitlist-card-title { font-size: clamp(24px, 3vw, 36px); font-weight: 700; letter-spacing: -0.02em; color: var(--text-primary); margin-bottom: 12px; position: relative; z-index: 1; }
 .waitlist-card-sub   { font-size: 15px; color: var(--text-muted); margin-bottom: 36px; position: relative; z-index: 1; }
+
+/* ── Mobile optimisations ── */
+@media (max-width: 640px) {
+  /* Hero */
+  #hero { padding: 60px 16px 0; }
+  #hero::before { width: 100%; }
+  .hero-badge { font-size: 11px; padding: 4px 10px 4px 8px; text-align: center; white-space: normal; line-height: 1.5; }
+  .hero-h1 br { display: none; }
+  .hero-sub { margin-bottom: 28px; }
+  .hero-actions { flex-direction: column; align-items: stretch; gap: 10px; }
+  .hero-actions .btn-primary,
+  .hero-actions .btn-ghost { justify-content: center; width: 100%; }
+  .hero-note { flex-wrap: wrap; text-align: center; gap: 4px; }
+  .hero-stats { max-width: 100%; margin-bottom: 40px; }
+  .hero-stat { padding: 14px 12px; }
+  .hero-stat-value { font-size: 18px; }
+
+  /* Problem */
+  #problem { padding: 64px 16px; }
+  .problem-card { padding: 24px 20px; }
+  .terminal { font-size: 11px; padding: 12px 14px; overflow-x: auto; }
+
+  /* How It Works */
+  #how-it-works { padding: 0 16px 64px; }
+  .how-header { margin-bottom: 40px; }
+  .step-card { padding: 20px; }
+
+  /* Features */
+  #features { padding: 0 16px 64px; }
+  .features-header { margin-bottom: 40px; }
+  .feature-card { padding: 24px 20px; }
+
+  /* Analytics */
+  #analytics { padding: 0 16px 64px; }
+  .analytics-header { margin-bottom: 40px; }
+  .analytics-card { padding: 20px 16px; }
+  .impact-row { grid-template-columns: 72px 1fr 44px; }
+
+  /* Waitlist */
+  #waitlist { padding: 0 16px 64px; }
+  .waitlist-card-sub { font-size: 14px; }
+}
+
+@media (max-width: 400px) {
+  .hero-stats { flex-direction: column; border-radius: var(--radius-md); }
+  .hero-stat + .hero-stat::before { top: 0; left: 20%; height: 1px; width: 60%; }
+  .terminal { font-size: 10px; }
+  .impact-row { grid-template-columns: 60px 1fr 40px; font-size: 11px; }
+}
 </style>
