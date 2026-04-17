@@ -48,6 +48,22 @@ wrangler pages deploy dist --project-name tradingviewoptimizer --branch main
 
 Requires `wrangler` authenticated (`wrangler whoami`).
 
+### Preview deploys
+
+Deploy any non-`main` branch to a preview URL (production stays untouched):
+
+```bash
+npm run build
+wrangler pages deploy dist --project-name tradingviewoptimizer --branch <branch-name>
+```
+
+Preview URL: `https://<branch-name>.tradingviewoptimizer.pages.dev`.
+
+One-time preview-env setup:
+- Upload secrets: `wrangler pages secret bulk .dev.vars --project-name=tradingviewoptimizer --env=preview`
+- Add the `WAITLIST` KV binding for Preview in the Cloudflare dashboard (Settings → Functions → KV namespace bindings)
+- Add the preview callback URL to Allowed redirect URIs in the Asgardeo `tvoprod` app: `https://<branch-name>.tradingviewoptimizer.pages.dev/auth/callback`
+
 ### Cloudflare Pages environment variables
 
 Set these in the Cloudflare Pages dashboard (Settings → Environment Variables):
