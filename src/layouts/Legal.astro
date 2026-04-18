@@ -1,0 +1,187 @@
+---
+import Base from './Base.astro';
+
+interface Props {
+  title: string;
+  description: string;
+  heading: string;
+  updated: string;
+}
+
+const { title, description, heading, updated } = Astro.props;
+---
+
+<Base title={title} description={description}>
+  <article class="legal">
+    <div class="container legal-container">
+      <header class="legal-header">
+        <p class="section-label">Legal</p>
+        <h1 class="legal-title">{heading}</h1>
+        <p class="legal-updated">Last updated: {updated}</p>
+      </header>
+
+      <div class="legal-body">
+        <slot />
+      </div>
+
+      <footer class="legal-footer">
+        <p>
+          Questions about this document? Email
+          <a href="mailto:legal@tradingviewoptimizer.com">legal@tradingviewoptimizer.com</a>.
+        </p>
+      </footer>
+    </div>
+  </article>
+</Base>
+
+<style is:global>
+  .legal {
+    position: relative;
+    z-index: 1;
+    padding: 96px 24px 120px;
+  }
+
+  .legal-container {
+    max-width: 760px;
+  }
+
+  .legal-header {
+    margin-bottom: 48px;
+    padding-bottom: 28px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .legal-title {
+    font-size: clamp(28px, 4vw, 40px);
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    line-height: 1.15;
+    color: var(--text-primary);
+    margin-bottom: 10px;
+  }
+
+  .legal-updated {
+    font-size: 13px;
+    color: var(--text-muted);
+    font-family: 'Noto Sans Mono', monospace;
+  }
+
+  .legal-body {
+    color: var(--text-primary);
+    font-size: 15px;
+    line-height: 1.75;
+    text-align: justify;
+    hyphens: auto;
+  }
+
+  .legal-body h2 {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--text-primary);
+    letter-spacing: -0.01em;
+    margin: 40px 0 14px;
+    text-align: left;
+    hyphens: manual;
+  }
+
+  .legal-body h2:first-child {
+    margin-top: 0;
+  }
+
+  .legal-body h3 {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 24px 0 10px;
+    text-align: left;
+    hyphens: manual;
+  }
+
+  .legal-body p {
+    color: var(--text-muted);
+    margin-bottom: 16px;
+  }
+
+  .legal-body ul,
+  .legal-body ol {
+    color: var(--text-muted);
+    padding-left: 22px;
+    margin-bottom: 16px;
+  }
+
+  .legal-body li {
+    margin-bottom: 8px;
+    line-height: 1.7;
+  }
+
+  .legal-body li::marker {
+    color: var(--text-muted);
+  }
+
+  .legal-body a {
+    color: var(--accent);
+    text-decoration: none;
+  }
+
+  .legal-body a:hover {
+    text-decoration: underline;
+  }
+
+  .legal-body strong {
+    color: var(--text-primary);
+    font-weight: 600;
+  }
+
+  .legal-body code {
+    font-family: 'Noto Sans Mono', monospace;
+    font-size: 13px;
+    background: var(--bg-panels);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1px 6px;
+    color: var(--text-primary);
+  }
+
+  .legal-body .callout {
+    background: var(--bg-panels);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    border-radius: var(--radius-md);
+    padding: 18px 22px;
+    margin: 20px 0 24px;
+  }
+
+  .legal-body .callout p:last-child {
+    margin-bottom: 0;
+  }
+
+  .legal-body .callout-warn {
+    border-left-color: var(--yellow);
+  }
+
+  .legal-body .callout-red {
+    border-left-color: var(--red);
+  }
+
+  .legal-footer {
+    margin-top: 64px;
+    padding-top: 28px;
+    border-top: 1px solid var(--border);
+    font-size: 13px;
+    color: var(--text-muted);
+  }
+
+  .legal-footer a {
+    color: var(--accent);
+    text-decoration: none;
+  }
+
+  .legal-footer a:hover {
+    text-decoration: underline;
+  }
+
+  @media (max-width: 600px) {
+    .legal { padding: 64px 16px 72px; }
+    .legal-body { font-size: 14.5px; }
+  }
+</style>

@@ -88,6 +88,10 @@ src/
     pricing.astro             # Pricing page (monthly / annual)
     dashboard.astro           # User dashboard (protected)
     download.astro            # Public download page (macOS, Windows, Linux)
+    terms.astro               # Terms of Service
+    privacy.astro             # Privacy Policy
+    refunds.astro             # Refund Policy (strict no-refund)
+    disclaimer.astro          # Trading / financial disclaimer
     auth/
       login.ts                # Redirects to OIDC provider
       callback.ts             # Exchanges code, sets session cookie
@@ -105,12 +109,15 @@ src/
     DashboardPreview.astro
   layouts/
     Base.astro                # Reads session, passes user to Nav
+    Legal.astro               # Shared layout for legal docs (terms / privacy / refunds / disclaimer)
   lib/
     auth.ts                   # Asgardeo OIDC helpers
     session.ts                # HMAC-signed HttpOnly cookie session
     subscription.ts           # interpretSubscription() — derives trial/paid/expired/billing-issue state
   styles/global.css
 public/                       # Static assets
+docs/
+  consent-ledger.md           # Spec for cross-repo consent-recording feature (backend + desktop app)
 website-brief.md              # Source of truth for all copy and features
 CLAUDE.md                     # Agent instructions and design system
 ```

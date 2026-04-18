@@ -13,12 +13,18 @@ description: Shared project context — current state, tech stack, and key decis
 
 ## Key Files
 - `website-brief.md` — source of truth for all copy and feature descriptions
+- `docs/consent-ledger.md` — spec for the cross-repo consent-recording feature (backend API + desktop-app modal); referenced by legal docs
 - `CLAUDE.md` — design system, tone rules, behavior rules
 - `src/pages/index.astro` — homepage
 - `src/pages/pricing.astro` — pricing page (monthly $19.99 / annual $199.99)
 - `src/pages/dashboard.astro` — protected user dashboard
 - `src/pages/download.astro` — public download page (macOS, Windows, Linux)
+- `src/pages/terms.astro` — Terms of Service (US-only, Texas governing law, sole-prop operator)
+- `src/pages/privacy.astro` — Privacy Policy (Cloudflare, Asgardeo, Stripe; no-sale; CCPA + Texas TDPSA rights)
+- `src/pages/refunds.astro` — Refund Policy (strict no-refund; cancel-anytime stops future renewals)
+- `src/pages/disclaimer.astro` — Trading/financial disclaimer (not advice, hypothetical-performance)
 - `src/layouts/Base.astro` — shared layout, reads session and passes user to Nav
+- `src/layouts/Legal.astro` — shared typography/container for all four legal docs
 - `src/styles/global.css` — CSS custom properties and global styles
 - `src/pages/checkout/[plan].ts` — unauthenticated checkout gate; redirects to login then directly to Stripe
 - `src/lib/auth.ts` — OIDC helpers (IDP-agnostic; endpoint URLs from env vars)

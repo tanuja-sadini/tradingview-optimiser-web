@@ -1,0 +1,363 @@
+---
+import Legal from '../layouts/Legal.astro';
+---
+
+<Legal
+  title="Privacy Policy — TradingView Optimizer"
+  description="How TradingView Optimizer collects, uses, and protects your information."
+  heading="Privacy Policy"
+  updated="April 17, 2026"
+>
+
+<p>
+  This Privacy Policy explains how the operator of
+  <strong>TradingView Optimizer</strong> (<strong>"we,"</strong>
+  <strong>"us,"</strong> or <strong>"our"</strong>), a sole proprietorship
+  based in the State of Texas, United States, collects, uses, and shares
+  information in connection with our website, desktop application, and
+  related services (collectively, the <strong>"Services"</strong>).
+</p>
+
+<p>
+  This policy covers only what we collect. It does not cover what
+  third-party services (such as TradingView, Stripe, or your operating
+  system) collect from you directly; their privacy practices are governed
+  by their own policies.
+</p>
+
+<div class="callout">
+  <p>
+    <strong>Short version.</strong> We collect your email and a few account
+    details. We use Stripe for payments, an identity provider for sign-in,
+    and Cloudflare for hosting. We do <strong>not</strong> sell your data
+    and we do <strong>not</strong> upload your strategy data, backtest
+    results, or any other content stored by the desktop app — that stays
+    on your computer.
+  </p>
+</div>
+
+<h2>1. Who this policy applies to</h2>
+
+<p>
+  The Services are offered to residents of the United States only. If you
+  are not a U.S. resident, please do not submit information to us. We do
+  not knowingly collect information from children under 18; if you believe
+  a child has provided us with information, contact us at
+  <a href="mailto:legal@tradingviewoptimizer.com">legal@tradingviewoptimizer.com</a>
+  and we will delete it.
+</p>
+
+<h2>2. Information we collect</h2>
+
+<h3>2.1 Information you provide</h3>
+<ul>
+  <li>
+    <strong>Waitlist email.</strong> If you join the waitlist on our
+    website, we collect the email address you submit.
+  </li>
+  <li>
+    <strong>Account information.</strong> When you create an account, we
+    collect your email address and a unique identifier issued by our
+    identity provider. We do not handle or store your password; all
+    authentication is performed by our identity provider.
+  </li>
+  <li>
+    <strong>Payment information.</strong> When you subscribe, Stripe, Inc.
+    collects your payment-card or bank details directly. Stripe may
+    transmit additional details about the transaction to our backend
+    (including your name and billing address) as part of processing, but
+    we only <em>retain</em> a customer identifier, your subscription
+    status, the plan you selected, the last four digits of your payment
+    card (where available), and billing country. We never receive or
+    store full card numbers.
+  </li>
+  <li>
+    <strong>Consent records.</strong> When you accept these Terms and
+    this Privacy Policy from within the desktop application, we record
+    your account identifier, the versions of the documents you accepted,
+    the time of acceptance, and the IP address and user-agent string
+    captured by the server handling the request. We retain this record
+    as evidence of your acceptance for so long as your account exists
+    and for a reasonable period thereafter.
+  </li>
+  <li>
+    <strong>Communications.</strong> If you email us, we keep that
+    correspondence so we can respond and maintain a record of the issue.
+  </li>
+</ul>
+
+<h3>2.2 Information collected automatically</h3>
+<ul>
+  <li>
+    <strong>Server logs.</strong> Our hosting provider (Cloudflare) records
+    standard request metadata, including IP address, timestamp, user-agent,
+    and the URL requested. These logs are used for security, abuse
+    prevention, and debugging.
+  </li>
+  <li>
+    <strong>Session cookies.</strong> When you sign in, we set a single
+    first-party, HTTP-only cookie to keep you signed in. It contains an
+    encrypted session reference and expires when you sign out or after a
+    period of inactivity.
+  </li>
+  <li>
+    <strong>Usage counters.</strong> For subscribed users, we record a
+    counter of optimization runs associated with your account for billing
+    and fraud-prevention purposes. We do not record what your strategies
+    contain or what parameters you swept.
+  </li>
+</ul>
+
+<h3>2.3 Information we do NOT collect from the desktop app</h3>
+
+<p>
+  The desktop application stores your TradingView strategy parameters,
+  backtest results, sweep configurations, and run history in a local
+  database (SQLite) on your own computer. This content is <strong>never</strong>
+  transmitted to us and we have no ability to access it. The only data
+  transmitted from the desktop application is the telemetry described in
+  §2.4.
+</p>
+
+<h3>2.4 Telemetry (desktop application)</h3>
+
+<p>
+  Use of the desktop application requires the transmission of anonymous
+  product telemetry. This is a condition of the license granted in our
+  <a href="/terms">Terms of Service</a>; the application will not run
+  without it. We use telemetry to detect crashes, diagnose bugs, measure
+  performance, and understand which features are used so we can improve
+  the product.
+</p>
+
+<p>Telemetry consists of:</p>
+<ul>
+  <li>
+    A <strong>random install identifier</strong> (a UUID generated on first
+    launch and stored locally). This is not derived from your hardware and
+    cannot be used to identify you personally.
+  </li>
+  <li>
+    <strong>Environment metadata</strong>: application version, operating
+    system, OS version, CPU architecture, and display locale.
+  </li>
+  <li>
+    <strong>Feature-usage events</strong>: the <em>names</em> of actions
+    you take in the application (for example, that a sweep was started or
+    that the analytics view was opened). We do <strong>not</strong> include
+    the contents of your strategies, parameter values, symbols, timeframes,
+    or backtest results in these events.
+  </li>
+  <li>
+    <strong>Performance metrics</strong>: timings for significant
+    operations (for example, how long a sweep run took to complete).
+  </li>
+  <li>
+    <strong>Crash reports</strong>: when the application crashes, we
+    receive a stack trace and the environment metadata above. Crash
+    reports may contain fragments of memory; we make reasonable efforts to
+    scrub obvious personal data before storage.
+  </li>
+</ul>
+
+<p>
+  Telemetry is associated with your account identifier so we can
+  correlate issues with reports and contact you if a problem affects you.
+  We do not use telemetry for advertising and do not share it with any
+  third party other than the service providers listed in §5.
+</p>
+
+<p>
+  If you do not wish to send telemetry, please do not install or run the
+  desktop application. Your account and any website data can still be
+  removed under the rights described in §10.
+</p>
+
+<h2>3. How we use information</h2>
+
+<p>We use the information described above to:</p>
+<ul>
+  <li>Provide, maintain, and improve the Services;</li>
+  <li>Create and authenticate your account and keep you signed in;</li>
+  <li>Process subscriptions, billing, and refunds through Stripe;</li>
+  <li>Send you transactional messages (receipts, renewal notices, security alerts, service-update notices);</li>
+  <li>Respond to your support requests;</li>
+  <li>Detect, investigate, and prevent fraud, abuse, and violations of our <a href="/terms">Terms of Service</a>;</li>
+  <li>Diagnose crashes, fix bugs, measure performance, and understand which features are used, through the telemetry described in §2.4;</li>
+  <li>Record your acceptance of our <a href="/terms">Terms</a> and this Privacy Policy, as described in §2.1, for evidentiary purposes;</li>
+  <li>Comply with legal obligations and enforce our rights.</li>
+</ul>
+
+<p>
+  We do not sell your personal information, and we do not use your
+  information for advertising.
+</p>
+
+<h2>4. Legal bases for processing</h2>
+
+<p>We process your information based on:</p>
+<ul>
+  <li><strong>Contract.</strong> To provide the Services you have signed up for and process your subscription.</li>
+  <li><strong>Legitimate interests.</strong> To secure the Services, prevent fraud, and communicate with you about your account.</li>
+  <li><strong>Legal obligation.</strong> To comply with tax, accounting, and other legal requirements.</li>
+  <li><strong>Consent.</strong> For any activity where we ask you and you opt in (for example, joining the waitlist).</li>
+</ul>
+
+<h2>5. Service providers we use</h2>
+
+<p>
+  We rely on a small set of third-party service providers to operate the
+  Services. Each is contractually or by policy restricted from using your
+  information for its own marketing or unrelated purposes.
+</p>
+
+<ul>
+  <li>
+    <strong>Cloudflare, Inc.</strong> — hosts our website, edge functions,
+    and stores limited account metadata (such as waitlist emails and
+    session data). See
+    <a href="https://www.cloudflare.com/privacypolicy/" rel="noopener">Cloudflare's Privacy Policy</a>.
+  </li>
+  <li>
+    <strong>Stripe, Inc.</strong> — processes all payments and holds
+    payment-card information. See
+    <a href="https://stripe.com/privacy" rel="noopener">Stripe's Privacy Policy</a>.
+  </li>
+  <li>
+    <strong>WSO2 LLC (Asgardeo).</strong> — our identity provider; handles
+    account sign-up, sign-in, and password management. See
+    <a href="https://wso2.com/privacy-policy/" rel="noopener">WSO2's Privacy Policy</a>.
+  </li>
+  <li>
+    <strong>Email delivery.</strong> We use a transactional-email provider
+    to send account-related messages (receipts, renewal notices, and
+    support replies).
+  </li>
+</ul>
+
+<h2>6. When we share information</h2>
+
+<p>We share information only in the following circumstances:</p>
+<ul>
+  <li><strong>With service providers</strong> listed above, to the extent needed to operate the Services;</li>
+  <li><strong>With you</strong>, in response to your requests;</li>
+  <li><strong>To comply with law</strong>, legal process, or a binding government request, or to protect the safety, rights, or property of us, our users, or others;</li>
+  <li><strong>In a business transfer</strong>, such as a merger, acquisition, or sale of assets, in which case we will notify you and give you the opportunity to object where required by law.</li>
+</ul>
+
+<p>We do not sell or rent your personal information to third parties.</p>
+
+<h2>7. Cookies and similar technologies</h2>
+
+<p>We use only cookies that are strictly necessary to operate the Services:</p>
+<ul>
+  <li>A session cookie to keep you signed in after you log in.</li>
+  <li>Cloudflare's security cookies, which protect against abuse and bots.</li>
+</ul>
+
+<p>
+  We do not use advertising cookies, analytics cookies, or cross-site
+  tracking technologies. Because the cookies we use are strictly necessary,
+  no consent banner is required; you can still clear cookies at any time
+  through your browser.
+</p>
+
+<h2>8. Data retention</h2>
+
+<ul>
+  <li><strong>Waitlist emails</strong> — kept until we have launched and contacted you, or until you ask us to delete them.</li>
+  <li><strong>Account data</strong> — kept for as long as your account is active, and for a reasonable period after you close it so we can honor ongoing obligations (for example, tax and accounting records).</li>
+  <li><strong>Billing records</strong> — kept by us and by Stripe for as long as required by applicable tax and financial-reporting laws (typically 7 years in the United States).</li>
+  <li><strong>Server logs</strong> — rotated automatically on Cloudflare's standard schedule.</li>
+  <li><strong>Telemetry</strong> — raw event data kept for up to 13 months; aggregate and anonymized statistics may be kept indefinitely.</li>
+  <li><strong>Crash reports</strong> — kept for up to 13 months.</li>
+  <li><strong>Consent records</strong> — kept for the life of your account and for up to 6 years after account closure, as evidence of acceptance.</li>
+  <li><strong>Support correspondence</strong> — kept for up to 3 years after resolution.</li>
+</ul>
+
+<h2>9. Security</h2>
+
+<p>
+  We use commercially reasonable administrative, technical, and physical
+  safeguards to protect the information we hold, including encryption in
+  transit (HTTPS/TLS), encrypted session cookies, and access controls on
+  our infrastructure. No method of transmission or storage is 100% secure,
+  however. If we become aware of a data breach affecting your personal
+  information, we will notify you as required by applicable law.
+</p>
+
+<h2>10. Your rights</h2>
+
+<p>
+  Depending on where you live, you may have the following rights regarding
+  your personal information:
+</p>
+<ul>
+  <li><strong>Access</strong> — request a copy of the personal information we hold about you.</li>
+  <li><strong>Correction</strong> — ask us to correct information that is inaccurate or incomplete.</li>
+  <li><strong>Deletion</strong> — ask us to delete your personal information, subject to our legal and contractual obligations.</li>
+  <li><strong>Portability</strong> — receive your information in a structured, machine-readable format.</li>
+  <li><strong>Objection / restriction</strong> — object to, or ask us to restrict, certain processing.</li>
+  <li><strong>Withdraw consent</strong> — where we rely on consent, you can withdraw it at any time.</li>
+</ul>
+
+<p>
+  <strong>California residents.</strong> If you are a California resident,
+  the California Consumer Privacy Act (as amended by the CPRA) gives you
+  the rights listed above, the right not to be discriminated against for
+  exercising them, and the right to opt out of the sale or sharing of your
+  personal information. We do not sell or share your personal information
+  as those terms are defined in the CCPA.
+</p>
+
+<p>
+  <strong>Texas residents.</strong> If you are a Texas resident, the Texas
+  Data Privacy and Security Act gives you the same set of rights. We do
+  not sell personal data or process it for targeted advertising.
+</p>
+
+<p>
+  To exercise any of these rights, email us at
+  <a href="mailto:legal@tradingviewoptimizer.com">legal@tradingviewoptimizer.com</a>
+  from the address associated with your account. We may need to verify
+  your identity before acting on a request, and we will respond within the
+  timeframe required by applicable law (typically 45 days).
+</p>
+
+<h2>11. International users</h2>
+
+<p>
+  The Services are hosted in the United States and offered only to
+  residents of the United States. If you access the Services from outside
+  the United States, you do so on your own initiative and are responsible
+  for compliance with local laws. By using the Services, you consent to
+  the transfer and processing of your information in the United States.
+</p>
+
+<h2>12. Children</h2>
+
+<p>
+  The Services are not directed to children under 18, and we do not
+  knowingly collect personal information from anyone under 18. If you
+  believe a child has provided us with information, contact us at
+  <a href="mailto:legal@tradingviewoptimizer.com">legal@tradingviewoptimizer.com</a>
+  and we will delete it.
+</p>
+
+<h2>13. Changes to this policy</h2>
+
+<p>
+  We may update this Privacy Policy from time to time. If we make a
+  material change, we will give you reasonable advance notice by email or
+  by in-product notice before the change takes effect. The "Last updated"
+  date at the top of this page always reflects the current version.
+</p>
+
+<h2>14. Contact us</h2>
+
+<p>
+  Privacy questions or requests:
+  <a href="mailto:legal@tradingviewoptimizer.com">legal@tradingviewoptimizer.com</a>.
+</p>
+
+</Legal>
