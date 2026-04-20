@@ -1,14 +1,5 @@
 ---
 import Base from '../layouts/Base.astro';
-
-// TODO: replace with actual download URLs when available
-const DOWNLOADS = {
-  mac:     '#',
-  windows: '#',
-  linux:   '#',
-};
-
-const VERSION = '1.0.0'; // TODO: update with each release
 ---
 
 <Base
@@ -19,8 +10,9 @@ const VERSION = '1.0.0'; // TODO: update with each release
 <section id="download-hero">
   <div class="container">
     <p class="section-label reveal">Download</p>
-    <h1 class="download-title reveal">Get TradingView Optimizer for your platform.</h1>
-    <p class="download-sub reveal">Free to download. Subscription required to run optimizations.</p>
+    <h1 class="download-title reveal">Download TradingView Optimizer.</h1>
+    <p class="download-sub reveal">Available for macOS, Windows, and Linux.</p>
+    <p class="version-badge reveal" id="version-badge">Fetching latest&hellip;</p>
   </div>
 </section>
 
@@ -37,15 +29,23 @@ const VERSION = '1.0.0'; // TODO: update with each release
         </div>
         <div class="platform-info">
           <div class="platform-name">macOS</div>
-          <div class="platform-meta">Universal binary &mdash; Apple Silicon &amp; Intel</div>
-          <div class="platform-req">macOS 12 Monterey or later</div>
+          <div class="platform-meta">Native builds for Apple Silicon and Intel</div>
+          <div class="platform-req">macOS 12 or later</div>
         </div>
-        <a href={DOWNLOADS.mac} class="btn-primary platform-dl-btn" download>
-          <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-            <path d="M8 2v8m0 0l-3-3m3 3l3-3M3 13h10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-          Download .dmg
-        </a>
+        <div class="mac-dl-btns">
+          <button class="btn-primary platform-dl-btn" data-asset="mac">
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <path d="M8 2v8m0 0l-3-3m3 3l3-3M3 13h10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Intel .dmg
+          </button>
+          <button class="btn-primary platform-dl-btn" data-asset="mac-arm">
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <path d="M8 2v8m0 0l-3-3m3 3l3-3M3 13h10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Apple Silicon .dmg
+          </button>
+        </div>
       </div>
 
       <!-- Windows -->
@@ -57,15 +57,15 @@ const VERSION = '1.0.0'; // TODO: update with each release
         </div>
         <div class="platform-info">
           <div class="platform-name">Windows</div>
-          <div class="platform-meta">64-bit installer</div>
+          <div class="platform-meta">64-bit installer (.exe)</div>
           <div class="platform-req">Windows 10 or later</div>
         </div>
-        <a href={DOWNLOADS.windows} class="btn-ghost platform-dl-btn" download>
+        <button class="btn-primary platform-dl-btn" data-asset="windows">
           <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
             <path d="M8 2v8m0 0l-3-3m3 3l3-3M3 13h10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
           Download .exe
-        </a>
+        </button>
       </div>
 
       <!-- Linux -->
@@ -77,15 +77,15 @@ const VERSION = '1.0.0'; // TODO: update with each release
         </div>
         <div class="platform-info">
           <div class="platform-name">Linux</div>
-          <div class="platform-meta">AppImage &mdash; works on most distros</div>
-          <div class="platform-req">Ubuntu 20.04 / equivalent or later</div>
+          <div class="platform-meta">AppImage — no installation required</div>
+          <div class="platform-req">Ubuntu 20.04 or equivalent</div>
         </div>
-        <a href={DOWNLOADS.linux} class="btn-ghost platform-dl-btn" download>
+        <button class="btn-primary platform-dl-btn" data-asset="linux">
           <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
             <path d="M8 2v8m0 0l-3-3m3 3l3-3M3 13h10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
           Download .AppImage
-        </a>
+        </button>
       </div>
 
     </div>
@@ -95,11 +95,65 @@ const VERSION = '1.0.0'; // TODO: update with each release
         <circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.5"/>
         <path d="M8 7v4M8 5.5v.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
       </svg>
-      A subscription is required to run optimizations. <a href="/pricing">View pricing →</a>
+      A subscription is required to run optimizations. <a href="/pricing">View plans →</a>
     </div>
 
   </div>
 </section>
+
+<script is:inline>
+const API = 'https://api.github.com/repos/tanuja-sadini/tradingview-optimizer-releases/releases/latest';
+
+let releaseCache = null;
+
+async function fetchRelease() {
+  if (releaseCache) return releaseCache;
+  const data = await fetch(API, { headers: { Accept: 'application/vnd.github+json' } }).then(r => r.json());
+  const version = data.tag_name?.replace(/^v/, '') ?? '';
+  const assets = {};
+  for (const a of data.assets ?? []) {
+    assets[a.name] = a.browser_download_url;
+  }
+  releaseCache = { version, assets };
+  return releaseCache;
+}
+
+const ASSET_NAMES = {
+  'mac':     v => `TradingView.Optimizer-${v}-mac-x64.dmg`,
+  'mac-arm': v => `TradingView.Optimizer-${v}-mac-arm64.dmg`,
+  'windows': v => `TradingView.Optimizer-${v}-win-x64.exe`,
+  'linux':   v => `TradingView.Optimizer-${v}-linux-x86_64.AppImage`,
+};
+
+fetchRelease().then(({ version }) => {
+  const badge = document.getElementById('version-badge');
+  if (badge) badge.textContent = `Latest: v${version}`;
+});
+
+document.querySelectorAll('[data-asset]').forEach(btn => {
+  btn.addEventListener('click', async () => {
+    const key = btn.dataset.asset;
+
+    btn.disabled = true;
+    const originalHTML = btn.innerHTML;
+    btn.innerHTML = '<span style="opacity:.6">Fetching\u2026</span>';
+
+    try {
+      const { version, assets } = await fetchRelease();
+      const filename = ASSET_NAMES[key]?.(version);
+      const url = filename ? assets[filename] : undefined;
+      if (url) {
+        window.location.href = url;
+      }
+    } catch(e) {
+      console.error('[download] error', e);
+    } finally {
+      btn.innerHTML = originalHTML;
+      btn.disabled = false;
+    }
+  });
+});
+</script>
 
 </Base>
 
@@ -135,6 +189,18 @@ const VERSION = '1.0.0'; // TODO: update with each release
   max-width: 420px;
   margin: 0 auto;
   line-height: 1.7;
+}
+
+.version-badge {
+  display: inline-block;
+  margin-top: 12px;
+  font-size: 12px;
+  font-family: 'Noto Sans Mono', monospace;
+  color: var(--text-muted);
+  background: var(--bg-panels);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 3px 10px;
 }
 
 #download-platforms {
@@ -199,6 +265,13 @@ const VERSION = '1.0.0'; // TODO: update with each release
   align-items: center;
   gap: 7px;
   white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.mac-dl-btns {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
   flex-shrink: 0;
 }
 
