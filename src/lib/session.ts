@@ -1,7 +1,7 @@
 import { refreshTokens, type OIDCConfig } from './auth';
 
 const COOKIE = 'tvo_sess';
-const MAX_AGE = 60 * 60 * 8; // 8 hours
+const MAX_AGE = 60 * 60 * 24 * 30; // 30 days
 
 export interface Session {
   access_token:  string;

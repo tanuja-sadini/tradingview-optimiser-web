@@ -1,16 +1,19 @@
 import type { APIRoute } from 'astro';
-import { getSession } from '../../lib/session';
+import { getValidSession } from '../../lib/session';
 
 export const POST: APIRoute = async ({ request, locals }) => {
   const { env } = locals.runtime;
-  const session = await getSession(request, env.SESSION_SECRET);
+  const oidc = { authorizeUrl: env.OIDC_AUTHORIZE_URL, tokenUrl: env.OIDC_TOKEN_URL, logoutUrl: env.OIDC_LOGOUT_URL };
+  const result = await getValidSession(request, env.SESSION_SECRET, env.ASGARDEO_CLIENT_ID, env.ASGARDEO_CLIENT_SECRET, oidc);
 
-  if (!session) {
-    return json({ error: 'Unauthorized' }, 401);
+  if (!result) {
+    return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401, headers: { 'Content-Type': 'application/json' } });
   }
 
+  const { session, newCookie } = result;
+
   let body: { return_url?: string };
-  try { body = await request.json(); } catch { return json({ error: 'Bad request' }, 400); }
+  try { body = await request.json(); } catch { return new Response(JSON.stringify({ error: 'Bad request' }), { status: 400, headers: { 'Content-Type': 'application/json' } }); }
 
   const return_url = body.return_url ?? new URL(request.url).origin + '/dashboard';
 
@@ -24,12 +27,8 @@ export const POST: APIRoute = async ({ request, locals }) => {
   });
 
   const data = await res.json();
-  return json(data, res.status);
+  const headers = new Headers({ 'Content-Type': 'application/json' });
+  if (newCookie) headers.append('Set-Cookie', newCookie);
+  return new Response(JSON.stringify(data), { status: res.status, headers });
 };
 
-function json(data: unknown, status = 200) {
-  return new Response(JSON.stringify(data), {
-    status,
-    headers: { 'Content-Type': 'application/json' },
-  });
-}
