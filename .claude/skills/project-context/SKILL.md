@@ -26,6 +26,7 @@ description: Shared project context — current state, tech stack, and key decis
 - `src/layouts/Base.astro` — shared layout, reads session and passes user to Nav
 - `src/layouts/Legal.astro` — shared typography/container for all four legal docs
 - `src/styles/global.css` — CSS custom properties and global styles
+- `src/pages/app/callback.astro` — OAuth redirect URI for the desktop app; forwards `?code&state` to `tradingview-optimizer://oauth/callback` (Electron custom protocol)
 - `src/pages/checkout/[plan].ts` — unauthenticated checkout gate; redirects to login then directly to Stripe
 - `src/lib/auth.ts` — OIDC helpers (IDP-agnostic; endpoint URLs from env vars)
 - `src/lib/session.ts` — HMAC-signed HttpOnly cookie session management
@@ -36,6 +37,7 @@ description: Shared project context — current state, tech stack, and key decis
 - **Flow:** Authorization Code (server-side, confidential client)
 - **Session:** HMAC-SHA256 signed HttpOnly cookie `tvo_sess`, 8hr lifetime
 - **Routes:** `/auth/login` → `/auth/callback` → `/auth/logout`
+- **Desktop app redirect URI:** `/app/callback` — separate from the website auth flow; registered in Asgardeo as allowed redirect URI for the Electron app
 - Credentials and OIDC endpoint URLs stored in Cloudflare Pages env vars and `.dev.vars` locally
 - OIDC endpoint env vars: `OIDC_AUTHORIZE_URL`, `OIDC_TOKEN_URL`, `OIDC_LOGOUT_URL`
 

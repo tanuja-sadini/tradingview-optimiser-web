@@ -1,0 +1,19 @@
+---
+// OAuth redirect URI for the TradingView Optimizer desktop app (Electron).
+// Asgardeo redirects here after login; this page hands control back to the
+// app via the custom protocol handler tradingview-optimizer://
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Signing in to TradingView Optimizer…</title>
+</head>
+<body>
+  <p>Returning to TradingView Optimizer… You can close this tab.</p>
+  <script>
+    const qs = window.location.search;
+    window.location.href = "tradingview-optimizer://oauth/callback" + qs;
+  </script>
+</body>
+</html>

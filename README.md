@@ -92,6 +92,8 @@ src/
     privacy.astro             # Privacy Policy
     refunds.astro             # Refund Policy (strict no-refund)
     disclaimer.astro          # Trading / financial disclaimer
+    app/
+      callback.astro          # OAuth redirect URI for the desktop app — forwards ?code&state to tradingview-optimizer://oauth/callback
     auth/
       login.ts                # Redirects to OIDC provider
       callback.ts             # Exchanges code, sets session cookie
