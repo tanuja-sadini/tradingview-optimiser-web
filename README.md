@@ -104,10 +104,11 @@ src/
       checkout.ts             # POST — proxies to backend /v1/checkout
       me.ts                   # GET  — proxies to backend /v1/me
       portal.ts               # POST — proxies to backend /v1/portal (Stripe billing portal)
+      waitlist.ts             # POST — validates email, proxies to backend /v1/waitlist
   components/
     Nav.astro                 # Auth-aware nav with account dropdown
     Footer.astro
-    WaitlistForm.astro        # Posts to https://api.tradingviewoptimizer.com/v1/waitlist
+    WaitlistForm.astro        # Posts to /api/waitlist (server-side proxy with email validation)
     DashboardPreview.astro
   layouts/
     Base.astro                # Reads session, passes user to Nav
@@ -165,6 +166,7 @@ All authenticated calls proxy through server-side API routes (access token never
 | `GET /api/me` | `GET /v1/me` |
 | `POST /api/checkout` | `POST /v1/checkout` |
 | `POST /api/portal` | `POST /v1/portal` (Stripe billing portal session) |
+| `POST /api/waitlist` | `POST /v1/waitlist` (validates email server-side before proxying) |
 
 Backend base: `https://api.tradingviewoptimizer.com`
 

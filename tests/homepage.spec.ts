@@ -3,7 +3,7 @@ import { test, expect, devices } from '@playwright/test';
 test.describe('Page load', () => {
   test('has correct title', async ({ page }) => {
     await page.goto('/');
-    await expect(page).toHaveTitle(/TradingView Strategy Optimizer/);
+    await expect(page).toHaveTitle(/TradingView Optimizer/);
   });
 
   test('returns 200', async ({ request }) => {
@@ -27,17 +27,15 @@ test.describe('Navigation', () => {
 
   test('nav has all section links', async ({ page }) => {
     const nav = page.locator('#nav');
-    await expect(nav.getByRole('link', { name: 'The Problem' })).toBeVisible();
     await expect(nav.getByRole('link', { name: 'How It Works' })).toBeVisible();
     await expect(nav.getByRole('link', { name: 'Features' })).toBeVisible();
     await expect(nav.getByRole('link', { name: 'Analytics' })).toBeVisible();
+    await expect(nav.getByRole('link', { name: 'Pricing' })).toBeVisible();
   });
 
-  test('nav CTA links to waitlist section', async ({ page }) => {
-    const cta = page.locator('#nav .nav-cta');
-    await expect(cta).toBeVisible();
-    const href = await cta.getAttribute('href');
-    expect(href).toContain('waitlist');
+  test('nav shows Log In and Get Started CTAs', async ({ page }) => {
+    await expect(page.locator('#nav a.nav-cta[href="/auth/login"]')).toBeVisible();
+    await expect(page.locator('#nav a.nav-cta[href="/pricing"]')).toBeVisible();
   });
 });
 
@@ -51,8 +49,8 @@ test.describe('Hero section', () => {
     await expect(page.locator('.hero-h1')).toContainText("TradingView doesn't have");
   });
 
-  test('shows early access badge', async ({ page }) => {
-    await expect(page.locator('.hero-badge')).toContainText('Early Access');
+  test('shows availability badge', async ({ page }) => {
+    await expect(page.locator('.hero-badge')).toContainText('Now Available');
   });
 
   test('shows all three platforms', async ({ page }) => {
@@ -72,7 +70,7 @@ test.describe('Hero section', () => {
   test('shows primary CTA', async ({ page }) => {
     const cta = page.locator('.hero-actions .btn-primary');
     await expect(cta).toBeVisible();
-    await expect(cta).toContainText('Join the Waitlist');
+    await expect(cta).toContainText('Get Started');
   });
 });
 
@@ -98,7 +96,7 @@ test.describe('Dashboard preview', () => {
   });
 
   test('window chrome has correct title', async ({ page }) => {
-    await expect(page.locator('.window-title')).toContainText('TradingView Strategy Optimizer');
+    await expect(page.locator('.window-title')).toContainText('TradingView Optimizer');
   });
 });
 
@@ -118,12 +116,12 @@ test.describe('The Problem section', () => {
 
   test('before card shows manual process pain', async ({ page }) => {
     const before = page.locator('.problem-card.before');
-    await expect(before).toContainText('Without TVO');
+    await expect(before).toContainText('Without TradingView Optimizer');
   });
 
   test('after card shows automated result', async ({ page }) => {
     const after = page.locator('.problem-card.after');
-    await expect(after).toContainText('With TVO');
+    await expect(after).toContainText('With TradingView Optimizer');
   });
 });
 
@@ -195,47 +193,18 @@ test.describe('Analytics section', () => {
   });
 });
 
-test.describe('Waitlist form', () => {
+test.describe('CTA section', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/');
-    // Intercept the API so tests don't write to production KV
-    await page.route('/api/waitlist', async route => {
-      const body = route.request().postDataJSON();
-      const email: string = body?.email ?? '';
-      const valid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-      await route.fulfill({
-        status: valid ? 200 : 400,
-        contentType: 'application/json',
-        body: JSON.stringify(valid ? { ok: true } : { ok: false, error: 'Invalid email address.' }),
-      });
-    });
   });
 
-  test('form is visible', async ({ page }) => {
-    await expect(page.locator('#waitlistForm')).toBeVisible();
+  test('CTA section is present', async ({ page }) => {
+    await expect(page.locator('.cta-card-title')).toContainText('Ready to stop clicking');
   });
 
-  test('email input is present', async ({ page }) => {
-    await expect(page.locator('#emailInput')).toBeVisible();
-  });
-
-  test('submit button is present', async ({ page }) => {
-    await expect(page.locator('#submitBtn')).toBeVisible();
-    await expect(page.locator('#submitBtn')).toContainText('Join Waitlist');
-  });
-
-  test('shows success message after valid submission', async ({ page }) => {
-    await page.locator('#emailInput').fill('test@example.com');
-    await page.locator('#submitBtn').click();
-
-    await expect(page.locator('#formSuccess')).toBeVisible({ timeout: 5000 });
-    await expect(page.locator('#formSuccess')).toContainText("You're on the list");
-    await expect(page.locator('#waitlistForm')).not.toBeVisible();
-  });
-
-  test('waitlist CTA section exists', async ({ page }) => {
-    await expect(page.locator('#waitlist')).toBeVisible();
-    await expect(page.locator('.waitlist-card-title')).toContainText('Ready to stop clicking');
+  test('CTA links to pricing', async ({ page }) => {
+    const cta = page.locator('a.cta-btn[href="/pricing"]');
+    await expect(cta).toBeVisible();
   });
 });
 
@@ -249,7 +218,7 @@ test.describe('Footer', () => {
   });
 
   test('shows copyright', async ({ page }) => {
-    await expect(page.locator('footer')).toContainText('TradingView Strategy Optimizer');
+    await expect(page.locator('footer')).toContainText('TradingView Optimizer');
   });
 
   test('shows local data note', async ({ page }) => {

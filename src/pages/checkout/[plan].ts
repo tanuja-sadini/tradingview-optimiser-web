@@ -1,8 +1,8 @@
 import type { APIRoute } from 'astro';
+import { env } from 'cloudflare:workers';
 import { getSession } from '../../lib/session';
 
-export const GET: APIRoute = async ({ params, request, locals }) => {
-  const { env } = locals.runtime;
+export const GET: APIRoute = async ({ params, request }) => {
   const { plan } = params;
 
   if (plan !== 'monthly' && plan !== 'annual') {

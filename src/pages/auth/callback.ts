@@ -1,9 +1,9 @@
 import type { APIRoute } from 'astro';
+import { env } from 'cloudflare:workers';
 import { exchangeCode, parseIdToken } from '../../lib/auth';
 import { createSessionCookie } from '../../lib/session';
 
-export const GET: APIRoute = async ({ request, locals }) => {
-  const { env } = locals.runtime;
+export const GET: APIRoute = async ({ request }) => {
   const url   = new URL(request.url);
   const code  = url.searchParams.get('code');
   const state = url.searchParams.get('state');

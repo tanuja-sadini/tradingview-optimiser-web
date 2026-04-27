@@ -3,7 +3,7 @@ import Base from '../layouts/Base.astro';
 import { getValidSession } from '../lib/session';
 import { interpretSubscription, planLabel, type Subscription } from '../lib/subscription';
 
-const { env } = Astro.locals.runtime;
+import { env } from "cloudflare:workers";
 const oidc = { authorizeUrl: env.OIDC_AUTHORIZE_URL, tokenUrl: env.OIDC_TOKEN_URL, logoutUrl: env.OIDC_LOGOUT_URL };
 const result = await getValidSession(Astro.request, env.SESSION_SECRET, env.ASGARDEO_CLIENT_ID, env.ASGARDEO_CLIENT_SECRET, oidc);
 const session = result?.session ?? null;

@@ -1,8 +1,8 @@
 import type { APIRoute } from 'astro';
+import { env } from 'cloudflare:workers';
 import { getSession } from '../../lib/session';
 
-export const POST: APIRoute = async ({ request, locals }) => {
-  const { env } = locals.runtime;
+export const POST: APIRoute = async ({ request }) => {
   const session = await getSession(request, env.SESSION_SECRET);
 
   if (!session) {

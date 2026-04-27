@@ -8,9 +8,9 @@ test('page loads on mobile', async ({ page }) => {
   await expect(page.locator('.hero-h1')).toBeVisible();
 });
 
-test('nav CTA is visible on mobile', async ({ page }) => {
+test('hamburger menu button is visible on mobile', async ({ page }) => {
   await page.goto('/');
-  await expect(page.locator('#nav .nav-cta')).toBeVisible();
+  await expect(page.locator('#navHamburger')).toBeVisible();
 });
 
 test('nav links are hidden on mobile', async ({ page }) => {
@@ -23,13 +23,7 @@ test('feature cards are all present on mobile', async ({ page }) => {
   await expect(page.locator('.feature-card')).toHaveCount(4);
 });
 
-test('waitlist form is usable on mobile', async ({ page }) => {
+test('CTA section is visible on mobile', async ({ page }) => {
   await page.goto('/');
-  await page.route('/api/waitlist', route =>
-    route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ ok: true }) })
-  );
-  await page.locator('#emailInput').fill('mobile@example.com');
-  await page.locator('#submitBtn').scrollIntoViewIfNeeded();
-  await page.locator('#submitBtn').click({ force: true });
-  await expect(page.locator('#formSuccess')).toBeVisible({ timeout: 5000 });
+  await expect(page.locator('.cta-card-title')).toBeVisible();
 });

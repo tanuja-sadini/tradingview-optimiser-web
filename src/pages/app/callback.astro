@@ -7,13 +7,247 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Signing in to TradingView Optimizer…</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Authentication Complete — TradingView Optimizer</title>
+  <link rel="icon" href="/favicon.png" type="image/png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg-darkest:  #1E1F22;
+      --bg-panels:   #2B2D31;
+      --bg-cards:    #313338;
+      --accent:      #5865F2;
+      --text-primary:#DBDEE1;
+      --text-muted:  #80848E;
+      --green:       #23A55A;
+      --border:      rgba(255,255,255,0.06);
+    }
+
+    html, body {
+      height: 100%;
+      background: var(--bg-darkest);
+      color: var(--text-primary);
+      font-family: 'Noto Sans', sans-serif;
+      font-size: 16px;
+      line-height: 1.5;
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 2rem;
+    }
+
+    .card {
+      background: var(--bg-panels);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 2.5rem 3rem;
+      max-width: 440px;
+      width: 100%;
+      text-align: center;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.625rem;
+      margin-bottom: 2rem;
+      text-decoration: none;
+    }
+
+    .logo img {
+      width: 32px;
+      height: 32px;
+      object-fit: contain;
+    }
+
+    .logo span {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      letter-spacing: -0.01em;
+    }
+
+    .check-circle {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background: rgba(35, 165, 90, 0.15);
+      border: 1.5px solid rgba(35, 165, 90, 0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1.5rem;
+    }
+
+    .check-circle svg {
+      width: 32px;
+      height: 32px;
+      stroke: var(--green);
+    }
+
+    h1 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 0.5rem;
+    }
+
+    .subtitle {
+      color: var(--text-muted);
+      font-size: 0.9375rem;
+      margin-bottom: 2rem;
+    }
+
+    .timer-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 2rem;
+    }
+
+    .timer-label {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+    }
+
+    .timer-ring {
+      position: relative;
+      width: 52px;
+      height: 52px;
+    }
+
+    .timer-ring svg {
+      transform: rotate(-90deg);
+    }
+
+    .timer-ring circle.track {
+      fill: none;
+      stroke: var(--border);
+      stroke-width: 3;
+    }
+
+    .timer-ring circle.progress {
+      fill: none;
+      stroke: var(--accent);
+      stroke-width: 3;
+      stroke-linecap: round;
+      stroke-dasharray: 138.23; /* 2π × 22 */
+      stroke-dashoffset: 0;
+      transition: stroke-dashoffset 1s linear;
+    }
+
+    .timer-number {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin-bottom: 1.5rem;
+    }
+
+    .website-link {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+    }
+
+    .website-link a {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .website-link a:hover {
+      text-decoration: underline;
+    }
+  </style>
 </head>
 <body>
-  <p>Returning to TradingView Optimizer… You can close this tab.</p>
+  <div class="card">
+    <a href="/" class="logo">
+      <img src="/logo.png" alt="">
+      <span>TradingView Optimizer</span>
+    </a>
+
+    <div class="check-circle">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="20 6 9 17 4 12"></polyline>
+      </svg>
+    </div>
+
+    <h1>Authentication Complete</h1>
+    <p class="subtitle">You're signed in. Returning you to the app now.</p>
+
+    <div class="timer-wrap" id="timerWrap">
+      <div class="timer-label">You can close this tab in</div>
+      <div class="timer-ring">
+        <svg width="52" height="52" viewBox="0 0 52 52">
+          <circle class="track" cx="26" cy="26" r="22"/>
+          <circle class="progress" id="progressRing" cx="26" cy="26" r="22"/>
+        </svg>
+        <div class="timer-number" id="timerNumber">5</div>
+      </div>
+    </div>
+
+    <p class="close-msg" id="closeMsg" style="display:none;font-size:0.9375rem;color:var(--text-muted);margin-bottom:2rem;">
+      You can now close this tab.
+    </p>
+
+    <hr class="divider">
+
+    <p class="website-link">
+      Want to stay? <a href="/">Visit the website</a>
+    </p>
+  </div>
+
   <script>
+    // Hand off to the desktop app immediately
     const qs = window.location.search;
     window.location.href = "tradingview-optimizer://oauth/callback" + qs;
+
+    const TOTAL = 5;
+    const circumference = 2 * Math.PI * 22;
+    const ring = document.getElementById('progressRing');
+    const label = document.getElementById('timerNumber');
+    const timerWrap = document.getElementById('timerWrap');
+    const closeMsg = document.getElementById('closeMsg');
+    let remaining = TOTAL;
+
+    ring.style.strokeDashoffset = '0';
+
+    const interval = setInterval(() => {
+      remaining -= 1;
+      label.textContent = remaining;
+      ring.style.strokeDashoffset = circumference * (1 - remaining / TOTAL);
+      if (remaining <= 0) {
+        clearInterval(interval);
+        // Try close — works if tab was opened by window.open(); silently no-ops otherwise
+        window.close();
+        // Fallback: swap timer for a close-prompt after a short delay
+        setTimeout(() => {
+          timerWrap.style.display = 'none';
+          closeMsg.style.display = 'block';
+        }, 400);
+      }
+    }, 1000);
   </script>
 </body>
 </html>

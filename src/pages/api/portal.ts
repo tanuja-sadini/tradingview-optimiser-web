@@ -1,8 +1,8 @@
 import type { APIRoute } from 'astro';
+import { env } from 'cloudflare:workers';
 import { getValidSession } from '../../lib/session';
 
-export const POST: APIRoute = async ({ request, locals }) => {
-  const { env } = locals.runtime;
+export const POST: APIRoute = async ({ request }) => {
   const oidc = { authorizeUrl: env.OIDC_AUTHORIZE_URL, tokenUrl: env.OIDC_TOKEN_URL, logoutUrl: env.OIDC_LOGOUT_URL };
   const result = await getValidSession(request, env.SESSION_SECRET, env.ASGARDEO_CLIENT_ID, env.ASGARDEO_CLIENT_SECRET, oidc);
 

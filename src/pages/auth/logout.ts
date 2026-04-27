@@ -1,9 +1,9 @@
 import type { APIRoute } from 'astro';
+import { env } from 'cloudflare:workers';
 import { buildLogoutUrl } from '../../lib/auth';
 import { clearSessionCookie } from '../../lib/session';
 
-export const GET: APIRoute = async ({ request, locals }) => {
-  const { env } = locals.runtime;
+export const GET: APIRoute = async ({ request }) => {
   const oidc = { authorizeUrl: env.OIDC_AUTHORIZE_URL, tokenUrl: env.OIDC_TOKEN_URL, logoutUrl: env.OIDC_LOGOUT_URL };
   return new Response(null, {
     status: 302,

@@ -26,7 +26,8 @@ description: Shared project context — current state, tech stack, and key decis
 - `src/layouts/Base.astro` — shared layout, reads session and passes user to Nav
 - `src/layouts/Legal.astro` — shared typography/container for all four legal docs
 - `src/styles/global.css` — CSS custom properties and global styles
-- `src/pages/app/callback.astro` — OAuth redirect URI for the desktop app; forwards `?code&state` to `tradingview-optimizer://oauth/callback` (Electron custom protocol)
+- `src/pages/app/callback.astro` — OAuth redirect URI for the desktop app; forwards `?code&state` to `tradingview-optimizer://oauth/callback` (Electron custom protocol); styled with full branding, 5s countdown, and close-tab fallback
+- `src/pages/api/waitlist.ts` — POST proxy for waitlist signups; validates email server-side before forwarding to backend `/v1/waitlist`
 - `src/pages/checkout/[plan].ts` — unauthenticated checkout gate; redirects to login then directly to Stripe
 - `src/lib/auth.ts` — OIDC helpers (IDP-agnostic; endpoint URLs from env vars)
 - `src/lib/session.ts` — HMAC-signed HttpOnly cookie session management
@@ -49,7 +50,7 @@ description: Shared project context — current state, tech stack, and key decis
   - `POST /v1/checkout` — create Stripe checkout session (`plan: monthly | annual`)
   - `POST /v1/portal` — create Stripe billing portal session (cancel/switch plan)
   - `POST /v1/waitlist` — join waitlist
-- Server-side proxies at `/api/me`, `/api/checkout`, and `/api/portal` keep the access token out of the browser
+- Server-side proxies at `/api/me`, `/api/checkout`, `/api/portal`, and `/api/waitlist` keep the access token out of the browser
 
 ## Pricing & Subscription
 - Monthly: $19.99/month
@@ -79,6 +80,9 @@ description: Shared project context — current state, tech stack, and key decis
 - Direct and technical — no "revolutionary", no "AI-powered"
 - Do not invent specific counts
 - Only use feature claims from `website-brief.md`
+
+## Astro v6 Migration Note
+- `Astro.locals.runtime.env` was removed in Astro v6. All pages and API routes now use `import { env } from "cloudflare:workers"` instead.
 
 ## Known Backlog
 See `.claude/memory/project_known_issues.md` for tracked issues.

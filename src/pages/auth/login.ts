@@ -1,8 +1,8 @@
 import type { APIRoute } from 'astro';
+import { env } from 'cloudflare:workers';
 import { loginUrl } from '../../lib/auth';
 
-export const GET: APIRoute = async ({ request, locals }) => {
-  const { env } = locals.runtime;
+export const GET: APIRoute = async ({ request }) => {
   const url  = new URL(request.url);
   const next = url.searchParams.get('next') ?? '/dashboard';
   // Only allow relative paths — prevent open redirect

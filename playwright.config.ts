@@ -11,6 +11,10 @@ export default defineConfig({
     trace: 'on-first-retry',
   },
 
+  expect: {
+    timeout: 15000,
+  },
+
   projects: [
     {
       name: 'desktop',

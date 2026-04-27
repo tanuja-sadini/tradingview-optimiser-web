@@ -3,7 +3,7 @@ import Base from '../layouts/Base.astro';
 import DashboardPreview from '../components/DashboardPreview.astro';
 import { getSession } from '../lib/session';
 
-const { env } = Astro.locals.runtime;
+import { env } from "cloudflare:workers";
 const session = await getSession(Astro.request, env.SESSION_SECRET);
 const user = session ? { email: session.email } : null;
 ---
