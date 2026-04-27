@@ -23,6 +23,7 @@ description: Shared project context — current state, tech stack, and key decis
 - `src/pages/privacy.astro` — Privacy Policy (Cloudflare, Asgardeo, Stripe; no-sale; CCPA + Texas TDPSA rights)
 - `src/pages/refunds.astro` — Refund Policy (strict no-refund; cancel-anytime stops future renewals)
 - `src/pages/disclaimer.astro` — Trading/financial disclaimer (not advice, hypothetical-performance)
+- `src/pages/contact.astro` — Contact page with three email cards: support, general, and legal
 - `src/layouts/Base.astro` — shared layout, reads session and passes user to Nav
 - `src/layouts/Legal.astro` — shared typography/container for all four legal docs
 - `src/styles/global.css` — CSS custom properties and global styles
