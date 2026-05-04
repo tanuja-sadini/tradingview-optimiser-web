@@ -226,9 +226,15 @@ test.describe('Footer', () => {
   });
 
   test('contact link is present', async ({ page }) => {
-    const contact = page.locator('footer a[href^="mailto:"]');
+    const contact = page.locator('footer a[href="/contact"]');
     await expect(contact).toBeVisible();
     await expect(contact).toContainText('Contact');
+  });
+
+  test('privacy link reads Privacy Policy', async ({ page }) => {
+    const privacyLink = page.locator('footer a[href="/privacy"]');
+    await expect(privacyLink).toBeVisible();
+    await expect(privacyLink).toContainText('Privacy Policy');
   });
 });
 

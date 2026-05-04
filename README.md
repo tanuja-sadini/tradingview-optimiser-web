@@ -89,7 +89,8 @@ src/
     dashboard.astro           # User dashboard (protected)
     download.astro            # Public download page (macOS, Windows, Linux)
     terms.astro               # Terms of Service
-    privacy.astro             # Privacy Policy
+    privacy.astro             # Privacy Policy (Google sign-in disclosure added)
+    privacy-policy.astro      # 301 redirect → /privacy
     refunds.astro             # Refund Policy (strict no-refund)
     disclaimer.astro          # Trading / financial disclaimer
     contact.astro             # Contact page (support / general / legal email cards)
@@ -125,6 +126,20 @@ docs/
 website-brief.md              # Source of truth for all copy and features
 CLAUDE.md                     # Agent instructions and design system
 ```
+
+## Testing
+
+Tests use Playwright. Environment-specific base URLs are set via `.env.test.*` files:
+
+| Command | Target |
+|---------|--------|
+| `npm test` | `http://localhost:4321` (local dev server — must be running) |
+| `npm run test:dev` | `https://dev.tradingviewoptimizer.com` |
+| `npm run test:production` | `https://tradingviewoptimizer.com` |
+
+**Workflow:** run `npm test` locally → if passing, commit and deploy → run `npm run test:dev` to confirm on the branch preview.
+
+---
 
 ## Auth Flow
 

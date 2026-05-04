@@ -20,7 +20,8 @@ description: Shared project context — current state, tech stack, and key decis
 - `src/pages/dashboard.astro` — protected user dashboard
 - `src/pages/download.astro` — public download page (macOS, Windows, Linux)
 - `src/pages/terms.astro` — Terms of Service (US-only, Texas governing law, sole-prop operator)
-- `src/pages/privacy.astro` — Privacy Policy (Cloudflare, Asgardeo, Stripe; no-sale; CCPA + Texas TDPSA rights)
+- `src/pages/privacy.astro` — Privacy Policy (Cloudflare, Asgardeo, Google, Stripe; no-sale; CCPA + Texas TDPSA rights; Google sign-in disclosure)
+- `src/pages/privacy-policy.astro` — 301 redirect to `/privacy`
 - `src/pages/refunds.astro` — Refund Policy (strict no-refund; cancel-anytime stops future renewals)
 - `src/pages/disclaimer.astro` — Trading/financial disclaimer (not advice, hypothetical-performance)
 - `src/pages/contact.astro` — Contact page with three email cards: support, general, and legal

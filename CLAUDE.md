@@ -8,8 +8,22 @@ Promotional website for the TradingView Strategy Optimizer desktop app. Full pro
 - Read operations within the project directory (ls, cd, git status, git diff, cat, etc.) do not require user permission — run them freely
 - Git commit messages must be a single line with no Claude attribution
 - Always test and verify what you changed and get the user's confirmation that it works as expected before you commit
+- **Test workflow:** (1) ensure the local dev server is running (`npm run dev`), then run `npm test` against it; (2) if all tests pass, commit and deploy to the current branch; (3) run `npm run test:dev` against `https://dev.tradingviewoptimizer.com` to confirm. On main, use `npm run test:production`. Env files: `.env.test.local`, `.env.test.dev`, `.env.test.production`.
 - After every functional change, update `README.md` and `.claude/skills/context/SKILL.md` to reflect the current state before committing
 - All commits must be authored as `tanuja-sadini <tanujasadini@gmail.com>` (set in local git config)
+- **After updating `src/pages/terms.astro` or `src/pages/privacy.astro`**, notify the backend by calling:
+  ```
+  curl -X POST https://api.tradingviewoptimizer.com/v1/admin/consent-config \
+    -H "Content-Type: application/json" \
+    -H "X-Admin-Key: $ADMIN_SECRET" \
+    -d '{
+      "terms_version": "<YYYY-MM-DD of updated doc>",
+      "privacy_version": "<YYYY-MM-DD of updated doc>",
+      "terms_url": "https://tradingviewoptimizer.com/terms",
+      "privacy_url": "https://tradingviewoptimizer.com/privacy"
+    }'
+  ```
+  Use the "Last updated" date of the changed document as its version. If only one doc changed, still include both versions (use the existing date for the unchanged one). `ADMIN_SECRET` is stored in `.dev.vars` locally and in Cloudflare Pages env vars.
 
 ## Project Structure
 

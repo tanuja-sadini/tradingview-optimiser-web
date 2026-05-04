@@ -7,7 +7,7 @@ export default defineConfig({
   reporter: 'list',
 
   use: {
-    baseURL: process.env.BASE_URL ?? 'https://tradingviewoptimizer.com',
+    baseURL: process.env.BASE_URL ?? 'http://localhost:4321',
     trace: 'on-first-retry',
   },
 
