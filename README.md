@@ -94,6 +94,7 @@ src/
     refunds.astro             # Refund Policy (strict no-refund)
     disclaimer.astro          # Trading / financial disclaimer
     contact.astro             # Contact page (support / general / legal email cards)
+    windows-install.astro     # Windows install guide — SmartScreen walkthrough; linked from Windows download flow
     app/
       callback.astro          # OAuth redirect URI for the desktop app — forwards ?code&state to tradingview-optimizer://oauth/callback
     auth/

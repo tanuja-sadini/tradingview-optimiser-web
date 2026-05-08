@@ -45,7 +45,7 @@ const ANNUAL_SAVINGS = ((MONTHLY_PRICE * 12) - ANNUAL_PRICE).toFixed(0); // 40
   <div class="container">
     <p class="section-label reveal">Pricing</p>
     <h1 class="pricing-title reveal">Simple, transparent pricing.</h1>
-    <p class="pricing-sub reveal">Full access on every plan. No feature tiers, no usage limits, no surprises.</p>
+    <p class="pricing-sub reveal">Start with a 7-day free trial. Full access on every plan. No feature tiers, no usage limits, no surprises.</p>
   </div>
 </section>
 
@@ -93,6 +93,17 @@ const ANNUAL_SAVINGS = ((MONTHLY_PRICE * 12) - ANNUAL_PRICE).toFixed(0); // 40
       </div>
     )}
 
+    {sub.state === 'none' && (
+      <div class="trial-callout reveal">
+        <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.5"/>
+          <path d="M8 4.5v4l2.5 1.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        <span><strong>7-day free trial included.</strong> Download the app, sign in, and your trial starts immediately — no payment required.</span>
+        <a href="/download">Download now →</a>
+      </div>
+    )}
+
     <div class="plans-grid reveal">
 
       <!-- Monthly -->
@@ -124,7 +135,7 @@ const ANNUAL_SAVINGS = ((MONTHLY_PRICE * 12) - ANNUAL_PRICE).toFixed(0); // 40
         ) : isLoggedIn ? (
           <button class="btn-ghost plan-cta" data-plan="monthly">Subscribe Monthly</button>
         ) : (
-          <a href="/checkout/monthly" class="btn-ghost plan-cta">Get Started</a>
+          <a href="/checkout/monthly" class="btn-ghost plan-cta">Start Free Trial</a>
         )}
       </div>
 
@@ -156,13 +167,20 @@ const ANNUAL_SAVINGS = ((MONTHLY_PRICE * 12) - ANNUAL_PRICE).toFixed(0); // 40
         ) : isLoggedIn ? (
           <button class="btn-primary plan-cta" data-plan="annual">Subscribe Annually</button>
         ) : (
-          <a href="/checkout/annual" class="btn-primary plan-cta">Get Started</a>
+          <a href="/checkout/annual" class="btn-primary plan-cta">Start Free Trial</a>
         )}
       </div>
 
     </div>
 
     <div class="plans-footnote reveal">
+      <span>
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.5"/>
+          <path d="M8 4.5v4l2.5 1.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        7-day free trial on every new account.
+      </span>
       <span>
         <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
           <path d="M8 1a7 7 0 1 0 0 14A7 7 0 0 0 8 1zm0 3v4l3 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
@@ -192,6 +210,10 @@ const ANNUAL_SAVINGS = ((MONTHLY_PRICE * 12) - ANNUAL_PRICE).toFixed(0); // 40
     <h2 class="faq-title reveal">Common questions</h2>
     <div class="faq-grid reveal">
       {[
+        {
+          q: 'Is there a free trial?',
+          a: 'Yes. Every new account gets a 7-day free trial with full access to all features. Download the app, sign in, and your trial starts immediately — no payment required. If you want to keep using the app after 7 days, pick a plan from the pricing page.',
+        },
         {
           q: 'What is included in the subscription?',
           a: 'Full access to all features: automated parameter sweeps, 5 analytics views (ranked table, impact charts, heatmap, scatter plots, run comparison), instrument & timeframe sweeping, resume from interruption, and one-click deploy back to TradingView.',
@@ -332,6 +354,27 @@ const ANNUAL_SAVINGS = ((MONTHLY_PRICE * 12) - ANNUAL_PRICE).toFixed(0); // 40
 }
 .expired-banner strong { color: var(--red); }
 .expired-banner a      { color: var(--red); }
+
+/* ── Trial callout ── */
+.trial-callout {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(88,101,242,0.07);
+  border: 1px solid rgba(88,101,242,0.2);
+  border-radius: var(--radius-md);
+  padding: 13px 18px;
+  font-size: 13px;
+  color: var(--text-muted);
+  max-width: 820px;
+  margin: 0 auto 28px;
+  flex-wrap: wrap;
+}
+
+.trial-callout svg { color: var(--accent); flex-shrink: 0; }
+.trial-callout strong { color: var(--text-primary); font-weight: 600; }
+.trial-callout a { color: var(--accent); text-decoration: none; margin-left: auto; white-space: nowrap; }
+.trial-callout a:hover { text-decoration: underline; }
 
 /* ── Current plan CTA ── */
 .plan-current {

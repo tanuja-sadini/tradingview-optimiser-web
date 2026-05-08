@@ -1,0 +1,384 @@
+---
+import Base from '../layouts/Base.astro';
+
+const version = Astro.url.searchParams.get('version') ?? '';
+---
+
+<Base
+  title="Windows Install Guide — TradingView Optimizer"
+  description="Step-by-step guide to installing TradingView Optimizer on Windows, including how to handle the Microsoft Defender SmartScreen prompt."
+>
+
+<section id="win-hero">
+  <div class="container">
+    <p class="section-label reveal">Windows Install Guide</p>
+    <h1 class="win-title reveal">Installing on Windows</h1>
+    <p class="win-sub reveal">
+      Your download has started. Follow the steps below to complete the installation.
+    </p>
+    {version && (
+      <p class="version-badge reveal">v{version}</p>
+    )}
+  </div>
+</section>
+
+<section id="win-content">
+  <div class="container win-inner">
+
+    <!-- SmartScreen notice callout -->
+    <div class="callout callout-info reveal">
+      <div class="callout-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.8"/>
+          <path d="M12 11v5M12 8.5v.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div>
+        <p class="callout-head">Windows may show a SmartScreen prompt</p>
+        <p class="callout-body">
+          This is expected. The current Windows build is not yet code-signed, so Windows flags it as
+          "unrecognized." The steps below walk you through getting past it.
+        </p>
+      </div>
+    </div>
+
+    <!-- Step list -->
+    <ol class="step-list">
+
+      <li class="step-item reveal">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <h2 class="step-title">Run the downloaded installer</h2>
+          <p class="step-desc">
+            Find <code>{version ? `TradingView.Optimizer-${version}-win-x64.exe` : 'TradingView.Optimizer-…-win-x64.exe'}</code> in your
+            Downloads folder and double-click it. If your browser shows a "Keep" / "Keep anyway"
+            prompt in the download bar, click that first.
+          </p>
+        </div>
+      </li>
+
+      <li class="step-item reveal">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <h2 class="step-title">If Windows shows "Microsoft Defender SmartScreen prevented an unrecognized app from starting"</h2>
+          <p class="step-desc">
+            This dialog appears because the installer is not yet digitally signed. It does
+            <strong>not</strong> mean the file is harmful — it means Windows hasn't seen enough
+            usage data for this specific build yet.
+          </p>
+          <div class="screenshot-slot">
+            <img src="/windows-smartscreen-warning.png" alt="SmartScreen warning dialog" class="screenshot-img" />
+          </div>
+        </div>
+      </li>
+
+      <li class="step-item reveal">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <h2 class="step-title">Click "More info"</h2>
+          <p class="step-desc">
+            In the SmartScreen dialog, click the <strong>More info</strong> link below the warning
+            text. This expands the dialog and reveals a "Run anyway" button.
+          </p>
+          <div class="screenshot-slot">
+            <img src="/windows-more-info.png" alt="SmartScreen More info link" class="screenshot-img" />
+          </div>
+        </div>
+      </li>
+
+      <li class="step-item reveal">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <h2 class="step-title">Click "Run anyway"</h2>
+          <p class="step-desc">
+            Click the <strong>Run anyway</strong> button. The installer will launch.
+          </p>
+          <div class="screenshot-slot">
+            <img src="/windows-run-anyway.png" alt="SmartScreen Run anyway button" class="screenshot-img" />
+          </div>
+        </div>
+      </li>
+
+      <li class="step-item reveal">
+        <div class="step-num">5</div>
+        <div class="step-body">
+          <h2 class="step-title">Finish the installer</h2>
+          <p class="step-desc">
+            Follow the installer prompts. By default the app installs to
+            <code>%LocalAppData%\Programs\TradingView Optimizer</code> and creates a Start Menu
+            shortcut. Accept the defaults unless you need a different location.
+          </p>
+        </div>
+      </li>
+
+      <li class="step-item reveal">
+        <div class="step-num">6</div>
+        <div class="step-body">
+          <h2 class="step-title">Launch the app</h2>
+          <p class="step-desc">
+            Open TradingView Optimizer from the Start Menu or desktop shortcut. Sign in with your
+            account to activate your subscription and start optimizing.
+          </p>
+        </div>
+      </li>
+
+    </ol>
+
+    <!-- Blocked / Properties tip -->
+    <div class="callout callout-warn reveal">
+      <div class="callout-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+          <path d="M12 9v5M12 16.5v.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div>
+        <p class="callout-head">If "Run anyway" does not appear</p>
+        <p class="callout-body">
+          Some Windows configurations hide the "Run anyway" option. In that case:
+          right-click the downloaded <code>.exe</code> → <strong>Properties</strong> → tick
+          <strong>Unblock</strong> at the bottom of the General tab (if present) →
+          click OK, then try running the installer again.
+        </p>
+      </div>
+    </div>
+
+    <!-- Support CTA -->
+    <div class="support-block reveal">
+      <p>Still stuck? We're happy to help.</p>
+      <a href="/contact" class="btn-primary">Contact support →</a>
+    </div>
+
+  </div>
+</section>
+
+</Base>
+
+<style>
+/* ── Hero ── */
+#win-hero {
+  padding: 96px 24px 48px;
+  text-align: center;
+  position: relative;
+  z-index: 1;
+}
+
+#win-hero::before {
+  content: '';
+  position: absolute;
+  top: -60px; left: 50%;
+  transform: translateX(-50%);
+  width: 600px; height: 360px;
+  background: radial-gradient(ellipse at center, rgba(88,101,242,0.12) 0%, transparent 65%);
+  pointer-events: none;
+}
+
+.win-title {
+  font-size: clamp(28px, 4vw, 44px);
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  color: var(--text-primary);
+  margin-bottom: 12px;
+}
+
+.win-sub {
+  font-size: 16px;
+  color: var(--text-muted);
+  max-width: 480px;
+  margin: 0 auto;
+  line-height: 1.7;
+}
+
+.version-badge {
+  display: inline-block;
+  margin-top: 12px;
+  font-size: 12px;
+  font-family: 'Noto Sans Mono', monospace;
+  color: var(--text-muted);
+  background: var(--bg-panels);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 3px 10px;
+}
+
+/* ── Content ── */
+#win-content {
+  padding: 8px 24px 120px;
+  position: relative;
+  z-index: 1;
+}
+
+.win-inner {
+  max-width: 760px;
+}
+
+/* ── Callouts ── */
+.callout {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  background: var(--bg-panels);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent);
+  border-radius: var(--radius-md);
+  padding: 20px 24px;
+  margin-bottom: 40px;
+}
+
+.callout-warn {
+  border-left-color: var(--yellow);
+  margin-bottom: 0;
+}
+
+.callout-icon {
+  color: var(--text-muted);
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.callout-head {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 6px;
+}
+
+.callout-body {
+  font-size: 14px;
+  color: var(--text-muted);
+  line-height: 1.6;
+  margin: 0;
+}
+
+.callout-body code {
+  font-family: 'Noto Sans Mono', monospace;
+  font-size: 12px;
+  background: var(--bg-cards);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 1px 5px;
+  color: var(--text-primary);
+}
+
+/* ── Steps ── */
+.step-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 48px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.step-item {
+  display: flex;
+  gap: 24px;
+  position: relative;
+  padding-bottom: 36px;
+}
+
+.step-item:last-child {
+  padding-bottom: 0;
+}
+
+/* Connector line between steps */
+.step-item:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  left: 19px;
+  top: 40px;
+  bottom: 0;
+  width: 2px;
+  background: var(--border);
+}
+
+.step-num {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--bg-panels);
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 700;
+  font-family: 'Noto Sans Mono', monospace;
+  color: var(--accent);
+  position: relative;
+  z-index: 1;
+}
+
+.step-body {
+  padding-top: 8px;
+  flex: 1;
+  min-width: 0;
+}
+
+.step-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+  line-height: 1.4;
+}
+
+.step-desc {
+  font-size: 14px;
+  color: var(--text-muted);
+  line-height: 1.7;
+  margin-bottom: 0;
+}
+
+.step-desc strong {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.step-desc code {
+  font-family: 'Noto Sans Mono', monospace;
+  font-size: 12px;
+  background: var(--bg-panels);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 1px 6px;
+  color: var(--text-primary);
+  word-break: break-all;
+}
+
+/* ── Screenshot slots ── */
+.screenshot-slot {
+  margin-top: 16px;
+}
+
+.screenshot-img {
+  max-width: 100%;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+}
+
+/* ── Support block ── */
+.support-block {
+  margin-top: 40px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.support-block p {
+  font-size: 14px;
+  color: var(--text-muted);
+}
+
+/* ── Responsive ── */
+@media (max-width: 560px) {
+  .step-item { gap: 16px; }
+  .step-num { width: 32px; height: 32px; font-size: 12px; }
+  .step-item:not(:last-child)::after { left: 15px; top: 34px; }
+  .callout { flex-direction: column; gap: 10px; }
+  .reassurance-block { padding: 20px; }
+  .support-block { flex-direction: column; align-items: flex-start; gap: 12px; }
+}
+</style>
